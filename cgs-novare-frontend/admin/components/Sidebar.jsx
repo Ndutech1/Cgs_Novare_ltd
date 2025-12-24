@@ -60,7 +60,7 @@ export default function Sidebar({ open = true, onToggle }) {
 
         <ListItemButton
           onClick={() =>
-            window.open(import.meta.env.VITE_FRONTEND_URL, "_blank")
+            window.open(import.meta.env.VITE_API_URL, "_blank")
           }
         >
           <ListItemIcon sx={{ color: "#4caf50" }}>
