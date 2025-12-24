@@ -23,13 +23,13 @@ export default function Home() {
   }, []);
 
   return (
-    <Box>
+    <Box sx={{ overflowX: "hidden" }} >
       <Hero hero={hero} images={heroImages} />
 
       {/* WHO WE ARE */}
       <Container sx={{ py: 8 }}>
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-          <Typography variant="h4" fontWeight={700} textAlign="center">Who We Are</Typography>
+          <Typography variant="h4" fontWeight={700} textAlign="center" sx={{ fontsize: { xs: "2.2rem", md:"3rem" } }}>Who We Are</Typography>
           <Typography variant="body1" textAlign="center" sx={{ mt: 3, maxWidth: 900, mx: "auto" }}>
             CGS Novare Ltd is dedicated to providing innovative, value-driven solutions across technology, engineering, business consulting, logistics, and human development.
           </Typography>

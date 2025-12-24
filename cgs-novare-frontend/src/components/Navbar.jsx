@@ -1,12 +1,17 @@
-// cgs-novare-frontend/src/components/Navbar.jsx
 import {
   AppBar,
   Toolbar,
   Button,
   Typography,
-  Box
+  Box,
+  IconButton,
+  Menu,
+  MenuItem,
+  Container
 } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
 
 const navItems = [
   { label: "Home", path: "/" },
@@ -19,76 +24,103 @@ const navItems = [
 
 export default function Navbar() {
   const location = useLocation();
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const open = Boolean(anchorEl);
 
   return (
     <AppBar
       position="sticky"
       elevation={0}
       sx={{
-        background: "transparent",
-        backdropFilter: "blur(10px)",
+        background: "rgba(255,255,255,0.85)",
+        backdropFilter: "blur(12px)",
         borderBottom: "1px solid rgba(0,0,0,0.06)",
       }}
     >
-      <Toolbar sx={{ maxWidth: 1200, mx: "auto", width: "100%" }}>
-        
-        {/* Logo */}
-        <Typography
-          component={Link}
-          to="/"
-          sx={{
-            flexGrow: 1,
-            textDecoration: "none",
-            fontFamily: "'Playfair Display', serif",
-            fontWeight: 700,
-            letterSpacing: "0.5px",
-            fontSize: { xs: "1.2rem", md: "1.4rem" },
-            color: "text.primary",
-          }}
-        >
-          CGS Novare Ltd
-        </Typography>
+      <Container maxWidth="lg">
+        <Toolbar disableGutters>
 
-        {/* Navigation */}
-        <Box sx={{ display: "flex", gap: 1.2 }}>
-          {navItems.map(item => {
-            const active = location.pathname === item.path;
+          {/* Logo */}
+          <Typography
+            component={Link}
+            to="/"
+            sx={{
+              flexGrow: 1,
+              textDecoration: "none",
+              fontFamily: "'Playfair Display', serif",
+              fontWeight: 700,
+              fontSize: { xs: "1.2rem", md: "1.4rem" },
+              color: "text.primary",
+            }}
+          >
+            CGS Novare Ltd
+          </Typography>
 
-            return (
-              <Button
+          {/* Desktop nav */}
+          <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
+            {navItems.map(item => {
+              const active = location.pathname === item.path;
+
+              return (
+                <Button
+                  key={item.label}
+                  component={Link}
+                  to={item.path}
+                  sx={{
+                    px: 2.5,
+                    py: 1,
+                    borderRadius: "999px",
+                    textTransform: "none",
+                    fontWeight: 500,
+                    fontSize: "0.95rem",
+                    color: active ? "#fff" : "text.primary",
+                    background: active
+                      ? "linear-gradient(135deg, #1e3c72, #2a5298)"
+                      : "transparent",
+                    "&:hover": {
+                      background:
+                        "linear-gradient(135deg, #1e3c72, #2a5298)",
+                      color: "#fff",
+                    },
+                  }}
+                >
+                  {item.label}
+                </Button>
+              );
+            })}
+          </Box>
+
+          {/* Mobile menu button */}
+          <IconButton
+            sx={{ display: { xs: "flex", md: "none" } }}
+            onClick={(e) => setAnchorEl(e.currentTarget)}
+          >
+            <MenuIcon />
+          </IconButton>
+
+          {/* Mobile menu */}
+          <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={() => setAnchorEl(null)}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            transformOrigin={{ vertical: "top", horizontal: "right" }}
+          >
+            {navItems.map(item => (
+              <MenuItem
                 key={item.label}
                 component={Link}
                 to={item.path}
-                sx={{
-                  px: 2.5,
-                  py: 1,
-                  borderRadius: "999px",
-                  textTransform: "none",
-                  fontWeight: 500,
-                  fontSize: "0.95rem",
-                  color: active ? "#fff" : "text.primary",
-                  background: active
-                    ? "linear-gradient(135deg, #1e3c72, #2a5298)"
-                    : "rgba(30,60,114,0.08)",
-                  boxShadow: active
-                    ? "0 8px 20px rgba(30,60,114,0.35)"
-                    : "0 4px 12px rgba(0,0,0,0.08)",
-                  transition: "all 0.3s ease",
-                  "&:hover": {
-                    transform: "translateY(-2px) scale(1.04)",
-                    background:
-                      "linear-gradient(135deg, #1e3c72, #2a5298)",
-                    color: "#fff",
-                    boxShadow: "0 12px 28px rgba(30,60,114,0.45)",
-                  },
-                }}
+                onClick={() => setAnchorEl(null)}
               >
                 {item.label}
-              </Button>
-            );
-          })}
-        </Box>
-      </Toolbar>
+              </MenuItem>
+            ))}
+          </Menu>
+
+        </Toolbar>
+      </Container>
     </AppBar>
   );
 }

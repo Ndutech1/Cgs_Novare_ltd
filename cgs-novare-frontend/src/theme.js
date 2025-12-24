@@ -11,7 +11,15 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: "Roboto, Arial, sans-serif"
+  },
+  components: {
+    MuiContainer: {
+      defaultProps: {
+        maxWidth: "lg"
+      }
+    }
   }
 });
 
 export default theme;
+
