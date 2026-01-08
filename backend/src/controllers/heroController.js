@@ -1,36 +1,73 @@
+//backend/controllers/heroController.js
 const Hero = require("../models/Hero");
 const cloudinary = require("../config/cloudinary");
 
-exports.updateHero = async (req, res) => {
-  const { headline, subheadline } = req.body;
-
-  let imageUrl;
-  if (req.file) {
-    const result = await cloudinary.uploader.upload(req.file.path);
-    imageUrl = result.secure_url;
-  }
-
-  const hero = await Hero.findOneAndUpdate(
-    {},
-    { headline, subheadline, imageUrl },
-    { upsert: true, new: true }
-  );
-
-  res.json(hero);
-};
-
-exports.getHero = async (req, res) => {
-  const hero = await Hero.findOne({});
-  res.json(hero);
-};
-
-exports.deleteHero = async (req, res) => {
+// =====================
+// CREATE HERO SLIDE
+// =====================
+exports.createHero = async (req, res) => {
   try {
-    const hero = await Hero.findByIdAndDelete(req.params.id);
-    if (!hero) return res.status(404).json({ success: false, message: "Hero not found" });
-    res.json({ success: true, message: "Hero deleted successfully" });
+    const { headline, subheadline } = req.body;
+
+    if (!req.file) {
+      return res.status(400).json({ message: "Image is required" });
+    }
+
+    const result = await cloudinary.uploader.upload(req.file.path);
+
+    const hero = await Hero.create({
+      headline,
+      subheadline,
+      imageUrl: result.secure_url
+    });
+
+    res.status(201).json(hero);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(500).json({ message: "Failed to create hero" });
   }
+};
+
+// =====================
+// GET ALL HERO SLIDES
+// =====================
+exports.getHeroes = async (req, res) => {
+  try {
+    const heroes = await Hero.find().sort({ createdAt: -1 });
+    res.json(heroes);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch heroes" });
+  }
+};
+
+// =====================
+// DELETE HERO SLIDE
+// =====================
+exports.deleteHero = async (req, res) => {
+  try {
+    await Hero.findByIdAndDelete(req.params.id);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to delete hero" });
+  }
+};
+
+// =====================
+// UPDATE HERO SLIDE
+// =====================
+exports.updateHero = async (req, res) => {
+  try {
+    const { headline, subheadline } = req.body;
+    const updateData = { headline, subheadline };
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path);
+      updateData.imageUrl = result.secure_url;
+    }
+    const hero = await Hero.findByIdAndUpdate(req.body.id, updateData, {
+      new: true
+    });
+    res.json(hero);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to update hero" });
+  } 
 };

@@ -1,69 +1,116 @@
-// cgs-novare-frontend/src/components/ProjectCard.jsx
-import { Card, CardMedia, CardContent, Typography, Box, Chip } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Box,
+  Chip,
+  Button,
+  Collapse
+} from "@mui/material";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination } from "swiper/modules";
 import { motion } from "framer-motion";
 import WorkIcon from "@mui/icons-material/Work";
+import { useState } from "react";
+import "swiper/css";
+import "swiper/css/pagination";
 
 export default function ProjectCard({ project }) {
-  const defaultImg = "/default/project_placeholder.jpg";
+  const [open, setOpen] = useState(false);
+
+  const images = project.images?.length
+    ? project.images
+    : ["/default/project_placeholder.jpg"];
+
+  const bullets = project.description?.split("\n").filter(Boolean);
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      whileHover={{ scale: 1.03 }}
+      whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.4 }}
       viewport={{ once: true }}
     >
-      <Card
-        sx={{
-          height: "100%",
-          borderRadius: 3,
-          boxShadow: 3,
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
-          transition: "all 0.3s ease",
-          "&:hover": { boxShadow: 8 },
-        }}
-      >
-        <Box sx={{ position: "relative" }}>
-          <CardMedia
-            component="img"
-            height="200"
-            image={project.imageUrl || defaultImg}
-            alt={project.title}
-          />
+      <Card sx={{ height: "100%", borderRadius: 3, boxShadow: 4 }}>
+
+        {/* IMAGE PREVIEW / CROPPED SLIDER */}
+        <Swiper
+          modules={[Autoplay, Pagination]}
+          autoplay={{ delay: 4000, disableOnInteraction: false }}
+          pagination={{ clickable: true }}
+          loop={images.length > 1}
+        >
+          {images.map((img, i) => (
+            <SwiperSlide key={i}>
+              <Box
+                sx={{
+                  height: 160,
+                  width: "100%",
+                  backgroundImage: `url(${img})`,
+                  backgroundSize: "cover",          // ✅ CROPS
+                  backgroundPosition: "center",     // ✅ ALIGNS
+                  backgroundRepeat: "no-repeat",
+                  borderTopLeftRadius: 12,
+                  borderTopRightRadius: 12
+                }}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+
+        <CardContent sx={{ p:2 }}>
           <Chip
             icon={<WorkIcon />}
             label={project.client || "Project"}
             color="secondary"
-            sx={{
-              position: "absolute",
-              top: 16,
-              left: 16,
-              borderRadius: "12px",
-              fontWeight: 700,
-            }}
+            sx={{ mb: 1, fontWeight: 700 }}
           />
-        </Box>
 
-        <CardContent sx={{ flexGrow: 1, p: 3 }}>
           <Typography variant="h6" fontWeight={700}>
             {project.title}
           </Typography>
 
-          {project.description && (
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-              {project.description}
+          {project.category && (
+            <Typography variant="caption" color="text.secondary">
+              {project.category}
             </Typography>
           )}
 
+          {/* DESCRIPTION */}
+          <Collapse in={open} collapsedSize={72}>
+            <Box component="ul" sx={{ pl: 2, mt: 1 }}>
+              {bullets?.map((line, i) => (
+                <Typography
+                  key={i}
+                  component="li"
+                  variant="body2"
+                  sx={{ textAlign: "justify", mb: 0.8 }}
+                >
+                  {line}
+                </Typography>
+              ))}
+            </Box>
+          </Collapse>
+
+          <Button
+            size="small"
+            sx={{ mt: 1, fontWeight: 600 }}
+            onClick={() => setOpen(!open)}
+          >
+            {open ? "Show less" : "Learn more →"}
+          </Button>
+
           {project.results && (
             <Box sx={{ mt: 2 }}>
-              <Typography variant="caption" fontWeight={600} color="success.main">
-                Key Achievement:
+              <Typography
+                variant="caption"
+                fontWeight={600}
+                color="success.main"
+              >
+                Key Outcome
               </Typography>
-              <Typography variant="caption" display="block">
+              <Typography variant="body2" sx={{ textAlign: "justify" }}>
                 {project.results}
               </Typography>
             </Box>
@@ -73,4 +120,3 @@ export default function ProjectCard({ project }) {
     </motion.div>
   );
 }
-

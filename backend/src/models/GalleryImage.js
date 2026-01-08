@@ -1,3 +1,4 @@
+//backend/src/models/GalleryImage.js
 const mongoose = require("mongoose");
 
 const galleryImageSchema = new mongoose.Schema(

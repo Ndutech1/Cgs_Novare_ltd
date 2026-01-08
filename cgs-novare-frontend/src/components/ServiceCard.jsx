@@ -1,69 +1,118 @@
 // cgs-novare-frontend/src/components/ServiceCard.jsx
-import { Card, CardContent, Typography, CardMedia, Box, Chip } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Box,
+  Chip,
+  Button,
+  Collapse,
+  Dialog
+} from "@mui/material";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
 import { motion } from "framer-motion";
 import BuildIcon from "@mui/icons-material/Build";
+import { useState } from "react";
+import "swiper/css";
 
 export default function ServiceCard({ service }) {
-  const defaultImg = "/default/3.jpg";
+  const [open, setOpen] = useState(false);
+  const [preview, setPreview] = useState(null);
+
+  // TEMP fallback until backend supports multiple images
+  const images = service.images?.length
+    ? service.images
+    : [service.imageUrl || "/default/3.jpg"];
+
+  // Auto bullet generation
+  const bullets = service.description
+    ?.split("\n")
+    .map(l => l.trim())
+    .filter(Boolean);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      whileHover={{ scale: 1.03 }}
-      transition={{ duration: 0.4 }}
-      viewport={{ once: true }}
-    >
-      <Card
-        sx={{
-          height: "100%",
-          borderRadius: 3,
-          boxShadow: 3,
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
-          transition: "all 0.3s ease",
-          "&:hover": { boxShadow: 8 },
-        }}
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        whileHover={{ scale: 1.02 }}
+        transition={{ duration: 0.4 }}
+        viewport={{ once: true }}
       >
-        <Box sx={{ position: "relative" }}>
-          <CardMedia
-            component="img"
-            height="200"
-            image={service.imageUrl || defaultImg}
-            alt={service.title}
-          />
-          <Chip
-            icon={<BuildIcon />}
-            label={service.category || "Service"}
-            color="primary"
-            sx={{
-              position: "absolute",
-              top: 16,
-              left: 16,
-              borderRadius: "12px",
-              fontWeight: 700,
-            }}
-          />
-        </Box>
+        <Card sx={{ height: "100%", borderRadius: 3, boxShadow: 4 }}>
 
-        <CardContent sx={{ flexGrow: 1, p: 3 }}>
-          <Typography variant="h6" fontWeight={700} gutterBottom>
-            {service.title}
-          </Typography>
+          {/* IMAGE SLIDER (CROPPED & ALIGNED) */}
+          <Swiper
+            modules={[Autoplay]}
+            autoplay={{ delay: 4000, disableOnInteraction: false }}
+            loop={images.length > 1}
+          >
+            {images.map((img, i) => (
+              <SwiperSlide key={i}>
+                <Box
+                  component="img"
+                  src={img}
+                  alt={service.title}
+                  onClick={() => setPreview(img)}
+                  sx={{
+                    width: "100%",
+                    height: 220,
+                    objectFit: "cover",     // ✅ CROPS LARGE IMAGES
+                    cursor: "pointer"
+                  }}
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
 
-          <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
-            {service.description}
-          </Typography>
+          <CardContent>
+            <Chip
+              icon={<BuildIcon />}
+              label={service.category || "Service"}
+              color="primary"
+              sx={{ mb: 1, fontWeight: 700 }}
+            />
 
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="caption" color="primary" fontWeight={600}>
-              Learn More →
+            <Typography variant="h6" fontWeight={700}>
+              {service.title}
             </Typography>
-          </Box>
-        </CardContent>
-      </Card>
-    </motion.div>
+
+            {/* COLLAPSIBLE DESCRIPTION */}
+            <Collapse in={open} collapsedSize={72}>
+              <Box component="ul" sx={{ pl: 2, mt: 1 }}>
+                {bullets?.map((line, i) => (
+                  <Typography
+                    key={i}
+                    component="li"
+                    variant="body2"
+                    sx={{ textAlign: "justify", mb: 0.8 }}
+                  >
+                    {line}
+                  </Typography>
+                ))}
+              </Box>
+            </Collapse>
+
+            <Button
+              size="small"
+              sx={{ mt: 1, fontWeight: 600 }}
+              onClick={() => setOpen(!open)}
+            >
+              {open ? "Show less" : "Learn more →"}
+            </Button>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* IMAGE PREVIEW */}
+      <Dialog open={Boolean(preview)} onClose={() => setPreview(null)} maxWidth="md">
+        <Box
+          component="img"
+          src={preview}
+          sx={{ width: "100%", maxHeight: "80vh", objectFit: "contain" }}
+        />
+      </Dialog>
+    </>
   );
 }
-

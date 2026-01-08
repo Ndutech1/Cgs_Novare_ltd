@@ -2,11 +2,20 @@ import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
   palette: {
+    mode: "dark",
+    background: {
+      default: "#050505",   // thick black
+      paper: "#0b0b0b"
+    },
     primary: {
-      main: "#0A4DA2" // professional blue
+      main: "#0A4DA2"
     },
     secondary: {
-      main: "#3c6b3fff" // sustainability green
+      main: "#3c6b3f"
+    },
+    text: {
+      primary: "#ffffff",
+      secondary: "rgba(255,255,255,0.7)"
     }
   },
   typography: {
@@ -22,4 +31,3 @@ const theme = createTheme({
 });
 
 export default theme;
-

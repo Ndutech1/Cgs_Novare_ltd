@@ -5,24 +5,27 @@ import { motion } from "framer-motion";
 import "swiper/css";
 import "swiper/css/effect-fade";
 
-export default function Hero({ hero, images = [] }) {
+export default function Hero({ heroSlides = [] }) {
+  // Default fallback slides
   const defaultImages = [
     "/default/1.jpg",
     "/default/2.jpg",
     "/default/3.jpg",
     "/default/4.jpg",
     "/default/5.jpg",
-    "/default/6.jpg"
+    "/default/6.jpg",
   ];
 
-  const heroImages = hero?.imageUrl ? [hero] : images.length ? images : defaultImages;
-
-  const headline =
-    hero?.headline || "Innovating Today, Empowering Tomorrow";
-
-  const subheadline =
-    hero?.subheadline ||
-    "Delivering cutting-edge solutions in technology, engineering, business consulting, logistics, and human development.";
+  // Prepare slides: either from backend or default
+  const slides =
+    heroSlides.length > 0
+      ? heroSlides
+      : defaultImages.map((img) => ({
+          imageUrl: img,
+          headline: "Innovating Today, Empowering Tomorrow",
+          subheadline:
+            "Delivering cutting-edge solutions in technology, engineering, business consulting, logistics, and human development.",
+        }));
 
   return (
     <Swiper
@@ -31,7 +34,7 @@ export default function Hero({ hero, images = [] }) {
       effect="fade"
       loop
     >
-      {heroImages.map((img, i) => (
+      {slides.map((slide, i) => (
         <SwiperSlide key={i}>
           <Box
             sx={{
@@ -42,7 +45,7 @@ export default function Hero({ hero, images = [] }) {
                   rgba(10, 37, 64, 0.6),
                   rgba(0, 110, 255, 0.4)
                 ),
-                url(${img.imageUrl || img})
+                url(${slide.imageUrl})
               `,
               backgroundSize: "cover",
               backgroundPosition: "center",
@@ -51,7 +54,7 @@ export default function Hero({ hero, images = [] }) {
               justifyContent: "center",
               textAlign: "center",
               color: "#fff",
-              px: 2
+              px: 2,
             }}
           >
             <Box maxWidth={900}>
@@ -61,7 +64,7 @@ export default function Hero({ hero, images = [] }) {
                 transition={{ duration: 1, delay: 0.3 }}
               >
                 <Typography variant="h2" fontWeight={800} sx={{ lineHeight: 1.2 }}>
-                  {headline}
+                  {slide.headline || "Innovating Today, Empowering Tomorrow"}
                 </Typography>
               </motion.div>
 
@@ -71,7 +74,8 @@ export default function Hero({ hero, images = [] }) {
                 transition={{ duration: 1, delay: 0.6 }}
               >
                 <Typography variant="h6" sx={{ mt: 3, opacity: 0.95 }}>
-                  {subheadline}
+                  {slide.subheadline ||
+                    "Delivering cutting-edge solutions in technology, engineering, business consulting, logistics, and human development."}
                 </Typography>
               </motion.div>
 
@@ -89,11 +93,8 @@ export default function Hero({ hero, images = [] }) {
                     px: 4,
                     py: 1.5,
                     fontWeight: 700,
-                    background:
-                      "linear-gradient(45deg, #007bff, #00c6ff)",
-                    "&:hover": {
-                      transform: "scale(1.05)"
-                    }
+                    background: "linear-gradient(45deg, #007bff, #00c6ff)",
+                    "&:hover": { transform: "scale(1.05)" },
                   }}
                   href="/services"
                 >
@@ -109,7 +110,7 @@ export default function Hero({ hero, images = [] }) {
                     px: 4,
                     py: 1.5,
                     fontWeight: 700,
-                    borderWidth: 2
+                    borderWidth: 2,
                   }}
                   href="/contact"
                 >
@@ -123,4 +124,3 @@ export default function Hero({ hero, images = [] }) {
     </Swiper>
   );
 }
-

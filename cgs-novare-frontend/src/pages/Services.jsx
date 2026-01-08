@@ -58,7 +58,7 @@ export default function Services() {
                   transition={{ duration: 0.5, delay: i * 0.2 }}
                   viewport={{ once: true }}
                 >
-                  <ServiceCard service={{ ...service, imageUrl: service.imageUrl || DEFAULT_IMAGE }} />
+                  <ServiceCard service={service}/>
                 </motion.div>
               </Grid>
             ))}

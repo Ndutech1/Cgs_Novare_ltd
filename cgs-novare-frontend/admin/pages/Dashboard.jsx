@@ -25,7 +25,7 @@ export default function Dashboard() {
   useEffect(() => {
     const loadStats = async () => {
       const [gallery, projects, services, inbox] = await Promise.all([
-        API.get("/gallery"),
+        API.get("/gallery/all"),
         API.get("/projects"),
         API.get("/services"),
         API.get("/contact/unread-count")

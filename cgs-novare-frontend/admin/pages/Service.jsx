@@ -46,7 +46,10 @@ export default function Services() {
     const formData = new FormData();
     formData.append("title", form.title);
     formData.append("description", form.description);
-    if (image) formData.append("image", image);
+
+    if (image?.length) {
+      image.forEach(img => formData.append("images", img));
+    }
 
     if (editingId) {
       await API.put(`/services/${editingId}`, formData);
@@ -59,6 +62,7 @@ export default function Services() {
     setEditingId(null);
     fetchServices();
   };
+
 
   /* ================= ACTIONS ================= */
   const handleEdit = (service) => {
@@ -113,7 +117,10 @@ export default function Services() {
             sx={{ mb: 2 }}
           />
 
-          <ImageUpload onChange={(e) => setImage(e.target.files[0])} />
+          <ImageUpload 
+            multiple 
+            onChange={(e) => setImage([...e.target.files])} 
+          />
 
           <Button
             variant="contained"
@@ -142,14 +149,19 @@ export default function Services() {
                   }
                 }}
               >
-                {service.imageUrl && (
+                {(service.images?.length || service.imageUrl) && (
                   <CardMedia
                     component="img"
                     height="180"
-                    image={service.imageUrl}
+                    image={
+                      service.images?.[0] ||
+                      service.imageUrl ||
+                      "/placeholder.jpg"
+                    }
                     alt={service.title}
                   />
                 )}
+
 
                 <CardContent>
                   <Typography variant="h6" fontWeight={600}>
@@ -184,3 +196,4 @@ export default function Services() {
     </Box>
   );
 }
+

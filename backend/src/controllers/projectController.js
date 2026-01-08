@@ -1,17 +1,20 @@
 const Project = require("../models/Project");
 const cloudinary = require("../config/cloudinary");
 
-exports.createProject = async (req, res) => {
-  let imageUrl;
+const uploadImages = async (files = []) => {
+  return Promise.all(
+    files.map(file =>
+      cloudinary.uploader.upload(file.path).then(res => res.secure_url)
+    )
+  );
+};
 
-  if (req.file) {
-    const upload = await cloudinary.uploader.upload(req.file.path);
-    imageUrl = upload.secure_url;
-  }
+exports.createProject = async (req, res) => {
+  const images = req.files ? await uploadImages(req.files) : [];
 
   const project = await Project.create({
     ...req.body,
-    imageUrl
+    images
   });
 
   res.status(201).json(project);
@@ -23,11 +26,10 @@ exports.getProjects = async (req, res) => {
 };
 
 exports.updateProject = async (req, res) => {
-  let updateData = req.body;
+  const updateData = { ...req.body };
 
-  if (req.file) {
-    const upload = await cloudinary.uploader.upload(req.file.path);
-    updateData.imageUrl = upload.secure_url;
+  if (req.files?.length) {
+    updateData.images = await uploadImages(req.files);
   }
 
   const project = await Project.findByIdAndUpdate(

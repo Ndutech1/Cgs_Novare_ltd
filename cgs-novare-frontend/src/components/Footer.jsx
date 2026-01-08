@@ -9,10 +9,11 @@ export default function Footer() {
         pt: 4,
         pb: 3,
         textAlign: "center",
-        background: "transparent",
-        borderTop: "1px solid rgba(0,0,0,0.06)",
+        background: "#050505",
+        borderTop: "1px solid rgba(255,255,255,0.08)",
       }}
     >
+
       <Typography
         sx={{
           fontFamily: "'Playfair Display', serif",

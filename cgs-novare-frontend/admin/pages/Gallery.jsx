@@ -1,3 +1,4 @@
+//cgs-novare-frontend/admin/pages/Gallery.jsx
 import { useEffect, useState } from "react";
 import {
   Box,
@@ -22,7 +23,7 @@ export default function Gallery() {
   const [file, setFile] = useState(null);
 
   const loadImages = async () => {
-    const res = await API.get("/gallery");
+    const res = await API.get("/gallery/all");
     setImages(res.data);
   };
 
@@ -105,3 +106,4 @@ export default function Gallery() {
     </Box>
   );
 }
+

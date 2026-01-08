@@ -7,7 +7,7 @@ const projectSchema = new mongoose.Schema(
     category: String,
     description: String,
     results: String,
-    imageUrl: String
+    images: [String] // ✅ MULTIPLE IMAGES
   },
   { timestamps: true }
 );

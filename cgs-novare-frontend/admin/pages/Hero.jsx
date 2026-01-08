@@ -6,163 +6,146 @@ import {
   TextField,
   Button,
   Stack,
-  IconButton,
-  Divider
+  IconButton
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-
 import API from "../services/adminApi";
 import Sidebar from "../components/Sidebar";
 
 export default function HeroAdmin() {
-  const [heroId, setHeroId] = useState(null);
-  const [headline, setHeadline] = useState("");
-  const [subheadline, setSubheadline] = useState("");
-  const [image, setImage] = useState(null);
-  const [preview, setPreview] = useState("");
+  const [heroes, setHeroes] = useState([]);
+  const [slides, setSlides] = useState([
+    { headline: "", subheadline: "", image: null }
+  ]); // Each slide has its own headline/subheadline/image
+
+  const fetchHeroes = async () => {
+    const { data } = await API.get("/hero");
+    setHeroes(data);
+  };
 
   useEffect(() => {
-    fetchHero();
+    fetchHeroes();
   }, []);
 
-  // =====================
-  // FETCH HERO
-  // =====================
-  const fetchHero = async () => {
-    try {
-      const { data } = await API.get("/hero");
-      if (!data) return;
-
-      setHeroId(data._id);
-      setHeadline(data.headline || "");
-      setSubheadline(data.subheadline || "");
-      setPreview(data.imageUrl || "");
-    } catch (err) {
-      console.error("Failed to fetch hero:", err);
-    }
+  // Handle change in headline/subheadline for a specific slide
+  const handleSlideChange = (index, field, value) => {
+    const newSlides = [...slides];
+    newSlides[index][field] = value;
+    setSlides(newSlides);
   };
 
-  // =====================
-  // UPDATE HERO
-  // =====================
+  // Handle file input for a specific slide
+  const handleFileChange = (index, file) => {
+    const newSlides = [...slides];
+    newSlides[index].image = file;
+    setSlides(newSlides);
+  };
+
+  // Add new empty slide
+  const addSlide = () => {
+    setSlides([...slides, { headline: "", subheadline: "", image: null }]);
+  };
+
+  // Remove slide before uploading
+  const removeSlide = (index) => {
+    const newSlides = [...slides];
+    newSlides.splice(index, 1);
+    setSlides(newSlides);
+  };
+
   const submit = async () => {
     try {
-      const formData = new FormData();
-      formData.append("headline", headline);
-      formData.append("subheadline", subheadline);
-      if (image) formData.append("image", image);
+      for (const slide of slides) {
+        if (!slide.image) {
+          alert("All slides must have an image!");
+          return;
+        }
 
-      await API.put("/hero", formData);
-      alert("Hero section updated successfully");
-      fetchHero();
+        const formData = new FormData();
+        formData.append("headline", slide.headline);
+        formData.append("subheadline", slide.subheadline);
+        formData.append("image", slide.image);
+
+        await API.post("/hero", formData);
+      }
+
+      // Reset form
+      setSlides([{ headline: "", subheadline: "", image: null }]);
+      fetchHeroes();
     } catch (err) {
-      console.error("Hero update failed:", err);
-      alert("Failed to update hero");
+      console.error("Failed to upload hero slides:", err);
     }
   };
 
-  // =====================
-  // DELETE HERO
-  // =====================
-  const deleteHero = async () => {
-    if (!heroId) return;
-    if (!window.confirm("Delete hero section?")) return;
-
+  const remove = async (id) => {
     try {
-      await API.delete(`/hero/${heroId}`);
-      setHeroId(null);
-      setHeadline("");
-      setSubheadline("");
-      setImage(null);
-      setPreview("");
-      alert("Hero section deleted");
+      await API.delete(`/hero/${id}`);
+      fetchHeroes();
     } catch (err) {
-      console.error("Hero delete failed:", err);
-      alert("Failed to delete hero");
+      console.error("Failed to delete hero slide:", err);
     }
   };
 
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "background.default" }}>
+    <Box sx={{ display: "flex" }}>
       <Sidebar />
+      <Box sx={{ p: 4, flexGrow: 1 }}>
+        <Typography variant="h4" mb={3}>Hero Slides</Typography>
 
-      <Box sx={{ flexGrow: 1, p: 4 }}>
-        <Typography variant="h4" fontWeight={700} mb={3}>
-          Hero Management
-        </Typography>
-
-        <Card sx={{ maxWidth: 720, p: 4 }}>
+        <Card sx={{ p: 3, maxWidth: 800 }}>
           <Stack spacing={3}>
-            <TextField
-              label="Headline"
-              value={headline}
-              onChange={(e) => setHeadline(e.target.value)}
-              fullWidth
-            />
+            {slides.map((slide, index) => (
+              <Card key={index} sx={{ p: 2 }}>
+                <Stack spacing={2}>
+                  <TextField
+                    label="Headline"
+                    value={slide.headline}
+                    onChange={(e) => handleSlideChange(index, "headline", e.target.value)}
+                  />
+                  <TextField
+                    label="Subheadline"
+                    value={slide.subheadline}
+                    onChange={(e) => handleSlideChange(index, "subheadline", e.target.value)}
+                    multiline
+                  />
+                  <Button component="label" variant="outlined">
+                    Upload Image
+                    <input
+                      hidden
+                      type="file"
+                      onChange={(e) => handleFileChange(index, e.target.files[0])}
+                    />
+                  </Button>
+                  {slide.image && <Typography>Selected: {slide.image.name}</Typography>}
+                  {slides.length > 1 && (
+                    <Button color="error" variant="outlined" onClick={() => removeSlide(index)}>
+                      Remove Slide
+                    </Button>
+                  )}
+                </Stack>
+              </Card>
+            ))}
 
-            <TextField
-              label="Subheadline"
-              value={subheadline}
-              onChange={(e) => setSubheadline(e.target.value)}
-              fullWidth
-              multiline
-              rows={3}
-            />
-
-            <Button variant="outlined" component="label">
-              Upload Hero Image
-              <input
-                hidden
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  const file = e.target.files[0];
-                  if (!file) return;
-                  setImage(file);
-                  setPreview(URL.createObjectURL(file));
-                }}
-              />
-            </Button>
-
-            {preview && (
-              <Box>
-                <Typography variant="caption">Image Preview</Typography>
-                <Box
-                  component="img"
-                  src={preview}
-                  sx={{
-                    width: "100%",
-                    mt: 1,
-                    borderRadius: 2,
-                    boxShadow: 3
-                  }}
-                />
-              </Box>
-            )}
-
-            <Divider />
-
-            <Stack direction="row" spacing={2} justifyContent="space-between">
-              <Button
-                variant="contained"
-                size="large"
-                onClick={submit}
-              >
-                Save Hero Section
-              </Button>
-
-              {heroId && (
-                <IconButton
-                  color="error"
-                  onClick={deleteHero}
-                  title="Delete Hero"
-                >
-                  <DeleteIcon />
-                </IconButton>
-              )}
+            <Stack direction="row" spacing={2}>
+              <Button variant="contained" onClick={addSlide}>Add Another Slide</Button>
+              <Button variant="contained" color="success" onClick={submit}>Upload All Slides</Button>
             </Stack>
           </Stack>
         </Card>
+
+        <Stack mt={4} spacing={2}>
+          {heroes.map((h) => (
+            <Card
+              key={h._id}
+              sx={{ p: 2, display: "flex", justifyContent: "space-between" }}
+            >
+              <Typography>{h.headline}</Typography>
+              <IconButton color="error" onClick={() => remove(h._id)}>
+                <DeleteIcon />
+              </IconButton>
+            </Card>
+          ))}
+        </Stack>
       </Box>
     </Box>
   );

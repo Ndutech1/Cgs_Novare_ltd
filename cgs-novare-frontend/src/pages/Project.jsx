@@ -26,9 +26,9 @@ export default function Projects() {
 
       {/* PROJECTS GRID */}
       <Container sx={{ py: 8 }}>
-        <Grid container spacing={4}>
+        <Grid container spacing={3}>
           {projects.map((project, i) => (
-            <Grid item xs={12} md={4} key={project._id}>
+            <Grid item xs={12} sm={6} md={4} lg={3} key={project._id}>
               <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: i * 0.2 }} viewport={{ once: true }}>
                 <ProjectCard project={project} />
               </motion.div>

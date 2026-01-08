@@ -1,17 +1,22 @@
+// backend/src/controllers/serviceController.js
 const Service = require("../models/Service");
 const cloudinary = require("../config/cloudinary");
 
-exports.createService = async (req, res) => {
-  let imageUrl;
+const uploadImages = async (files = []) => {
+  const uploads = await Promise.all(
+    files.map(file =>
+      cloudinary.uploader.upload(file.path).then(res => res.secure_url)
+    )
+  );
+  return uploads;
+};
 
-  if (req.file) {
-    const upload = await cloudinary.uploader.upload(req.file.path);
-    imageUrl = upload.secure_url;
-  }
+exports.createService = async (req, res) => {
+  const images = req.files ? await uploadImages(req.files) : [];
 
   const service = await Service.create({
     ...req.body,
-    imageUrl
+    images
   });
 
   res.status(201).json(service);
@@ -23,11 +28,10 @@ exports.getServices = async (req, res) => {
 };
 
 exports.updateService = async (req, res) => {
-  let updateData = req.body;
+  const updateData = { ...req.body };
 
-  if (req.file) {
-    const upload = await cloudinary.uploader.upload(req.file.path);
-    updateData.imageUrl = upload.secure_url;
+  if (req.files?.length) {
+    updateData.images = await uploadImages(req.files);
   }
 
   const service = await Service.findByIdAndUpdate(

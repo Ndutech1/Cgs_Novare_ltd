@@ -28,7 +28,7 @@ export default function Projects() {
     description: "",
     results: ""
   });
-  const [image, setImage] = useState(null);
+  const [images, setImages] = useState([]);
   const [editingId, setEditingId] = useState(null);
 
   const fetchProjects = async () => {
@@ -46,7 +46,10 @@ export default function Projects() {
   const handleSubmit = async () => {
     const formData = new FormData();
     Object.keys(form).forEach(key => formData.append(key, form[key]));
-    if (image) formData.append("image", image);
+
+    if (images.length) {
+      images.forEach(img => formData.append("images", img));
+    }
 
     editingId
       ? await API.put(`/projects/${editingId}`, formData)
@@ -59,7 +62,7 @@ export default function Projects() {
       description: "",
       results: ""
     });
-    setImage(null);
+    setImages([]);
     setEditingId(null);
     fetchProjects();
   };
@@ -103,7 +106,9 @@ export default function Projects() {
           <TextField fullWidth label="Description" name="description" multiline rows={3} value={form.description} onChange={handleChange} sx={{ mb: 2 }} />
           <TextField fullWidth label="Results / Impact" name="results" multiline rows={2} value={form.results} onChange={handleChange} sx={{ mb: 2 }} />
 
-          <ImageUpload onChange={(e) => setImage(e.target.files[0])} />
+          <ImageUpload 
+            multiple
+            onChange={(e) => setImages([...e.target.files])} />
 
           <Button variant="contained" sx={{ mt: 3 }} onClick={handleSubmit}>
             {editingId ? "Update Project" : "Add Project"}
@@ -128,8 +133,8 @@ export default function Projects() {
                   }
                 }}
               >
-                {project.imageUrl && (
-                  <CardMedia component="img" height="180" image={project.imageUrl} />
+                {(project.images?.length || project.imageUrl) && (
+                  <CardMedia component="img" height="180" image={project.images?.[0] || project.imageUrl || "/placeholder.jpg"} alt={project.title} />
                 )}
 
                 <CardContent>

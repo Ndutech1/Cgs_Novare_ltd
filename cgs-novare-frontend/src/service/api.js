@@ -7,23 +7,14 @@ const API = axios.create({
 
 // ✅ NORMALIZED RESPONSES
 
-export const fetchGalleryImages = async (category) => {
-  const res = await API.get("/gallery");
-  const images = res.data.data || res.data; // <-- FIX
-
-  if (!Array.isArray(images)) return [];
-
-  if (category) {
-    return images.filter(img => img.category === category);
-  }
-
-  return images;
+export const fetchGalleryImages = async () => {
+  const res = await API.get("/gallery/all");
+  return res.data;
 };
 
-export const fetchHero = async () => {
-  const { data } = await API.get("/hero");
-  
-  return data;
+export const fetchHeroes = async () => {
+  const res = await API.get("/hero");
+  return res.data;
 }
 
 export const fetchServices = async () => {
