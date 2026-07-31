@@ -19,7 +19,7 @@ export default function Gallery() {
   useEffect(() => {
     fetchGalleryImages()
       .then(setImages)
-      .catch(console.error);
+      .catch(() => setImages([]));
   }, []);
 
   const filtered =
@@ -88,6 +88,7 @@ export default function Gallery() {
             </Grid>
           ))}
         </Grid>
+        {!filtered.length && <Typography textAlign="center" color="text.secondary" sx={{ py: 7 }}>No images are available in this category yet.</Typography>}
       </Container>
 
       <Dialog

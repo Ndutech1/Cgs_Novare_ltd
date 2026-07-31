@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import API from "../services/adminApi";
-import Sidebar from "../components/Sidebar";
 
 export default function HeroAdmin() {
   const [heroes, setHeroes] = useState([]);
@@ -87,9 +86,7 @@ export default function HeroAdmin() {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <Sidebar />
-      <Box sx={{ p: 4, flexGrow: 1 }}>
+    <Box>
         <Typography variant="h4" mb={3}>Hero Slides</Typography>
 
         <Card sx={{ p: 3, maxWidth: 800 }}>
@@ -146,7 +143,6 @@ export default function HeroAdmin() {
             </Card>
           ))}
         </Stack>
-      </Box>
     </Box>
   );
 }

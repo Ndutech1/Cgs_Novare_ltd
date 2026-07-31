@@ -2,31 +2,37 @@ import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
   palette: {
-    mode: "dark",
+    mode: "light",
     background: {
-      default: "#050505",   // thick black
-      paper: "#0b0b0b"
+      default: "#f7f9fc",
+      paper: "#ffffff"
     },
     primary: {
-      main: "#0A4DA2"
+      main: "#0b5cab",
     },
     secondary: {
-      main: "#3c6b3f"
+      main: "#0e8c75"
     },
     text: {
-      primary: "#ffffff",
-      secondary: "rgba(255,255,255,0.7)"
+      primary: "#15253d",
+      secondary: "#62728a"
     }
   },
   typography: {
-    fontFamily: "Roboto, Arial, sans-serif"
+    fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
+    h1: { fontWeight: 800, letterSpacing: "-0.04em" },
+    h2: { fontWeight: 800, letterSpacing: "-0.035em" },
+    h3: { fontWeight: 750, letterSpacing: "-0.03em" },
+    h4: { fontWeight: 750, letterSpacing: "-0.02em" }
   },
   components: {
     MuiContainer: {
       defaultProps: {
         maxWidth: "lg"
       }
-    }
+    },
+    MuiButton: { styleOverrides: { root: { borderRadius: 10, textTransform: "none", fontWeight: 700 } } },
+    MuiCard: { styleOverrides: { root: { borderRadius: 16, boxShadow: "0 10px 32px rgba(20, 52, 88, .08)" } } }
   }
 });
 

@@ -11,7 +11,6 @@ import ImageIcon from "@mui/icons-material/Image";
 import WorkIcon from "@mui/icons-material/Work";
 import BuildIcon from "@mui/icons-material/Build";
 import MailIcon from "@mui/icons-material/Mail";
-import Sidebar from "../components/Sidebar";
 import API from "../services/adminApi";
 
 export default function Dashboard() {
@@ -39,22 +38,19 @@ export default function Dashboard() {
       });
     };
 
-    loadStats();
+    loadStats().catch(() => setStats({ images: 0, projects: 0, services: 0, unread: 0 }));
   }, []);
 
   return (
-    <Box sx={{ display: "flex", bgcolor: "#0b1e34", minHeight: "100vh" }}>
-      <Sidebar open />
-
-      <Box sx={{ p: 4, width: "100%" }}>
-        <Typography variant="h4" fontWeight={700} color="white">
+    <Box>
+        <Typography variant="h4" fontWeight={800}>
           Admin Overview
         </Typography>
 
         <Grid container spacing={3} sx={{ mt: 3 }}>
           {/* Images */}
           <Grid item xs={12} md={4}>
-            <Card sx={{ p: 3, bgcolor: "#102a43", color: "white" }}>
+            <Card sx={{ p: 3 }}>
               <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
                 <ImageIcon color="primary" />
                 <Box>
@@ -69,7 +65,7 @@ export default function Dashboard() {
 
           {/* Projects */}
           <Grid item xs={12} md={4}>
-            <Card sx={{ p: 3, bgcolor: "#102a43", color: "white" }}>
+            <Card sx={{ p: 3 }}>
               <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
                 <WorkIcon color="secondary" />
                 <Box>
@@ -84,7 +80,7 @@ export default function Dashboard() {
 
           {/* Services */}
           <Grid item xs={12} md={4}>
-            <Card sx={{ p: 3, bgcolor: "#102a43", color: "white" }}>
+            <Card sx={{ p: 3 }}>
               <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
                 <BuildIcon color="warning" />
                 <Box>
@@ -102,8 +98,6 @@ export default function Dashboard() {
             <Card
               sx={{
                 p: 3,
-                bgcolor: "#102a43",
-                color: "white",
                 borderLeft: stats.unread > 0 ? "4px solid #4caf50" : "none"
               }}
             >
@@ -119,7 +113,6 @@ export default function Dashboard() {
             </Card>
           </Grid>
         </Grid>
-      </Box>
     </Box>
   );
 }

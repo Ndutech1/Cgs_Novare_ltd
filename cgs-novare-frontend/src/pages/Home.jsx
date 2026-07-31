@@ -15,8 +15,8 @@ export default function Home() {
   const [heroSlides, setHeroSlides] = useState([]);
 
   useEffect(() => {
-    fetchServices().then(setServices);
-    fetchHeroes().then(setHeroSlides);
+    fetchServices().then(setServices).catch(() => setServices([]));
+    fetchHeroes().then(setHeroSlides).catch(() => setHeroSlides([]));
   }, []);
 
   return (
@@ -26,7 +26,7 @@ export default function Home() {
       {/* WHO WE ARE */}
       <Container sx={{ py: 8 }}>
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-          <Typography variant="h4" fontWeight={700} textAlign="center" sx={{ fontsize: { xs: "2.2rem", md: "3rem" } }}>
+          <Typography variant="h4" fontWeight={800} textAlign="center" sx={{ fontSize: { xs: "2.2rem", md: "3rem" } }}>
             Who We Are
           </Typography>
           <Typography variant="body1" textAlign="center" sx={{ mt: 3, maxWidth: 900, mx: "auto" }}>

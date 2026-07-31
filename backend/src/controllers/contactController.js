@@ -4,7 +4,11 @@ const ContactMessage = require("../models/ContactMessage");
  * Public: Submit contact form
  */
 exports.sendMessage = async (req, res) => {
-  const message = await ContactMessage.create(req.body);
+  const { name, email, phone, service, message } = req.body;
+  if (!name?.trim() || !email?.trim() || !message?.trim()) {
+    return res.status(400).json({ message: "Name, email and message are required." });
+  }
+  await ContactMessage.create({ name: name.trim(), email: email.trim().toLowerCase(), phone, service, message: message.trim() });
 
   res.status(201).json({
     success: true,
@@ -57,16 +61,7 @@ exports.deleteMessage = async (req, res) => {
 };
 
 exports.replyToMessage = async (req, res) => {
-  const { messageId, reply } = req.body;
-  const msg = await ContactMessage.findById(messageId);
-
-  await transporter.sendMail({
-    to: msg.email,
-    subject: "Reply from CGS Novare",
-    html: `<p>${reply}</p>`
-  });
-
-  res.json({ success: true });
+  return res.status(501).json({ message: "Email replies are not configured yet." });
 };
 exports.unreadCount = async (req, res) => {
   const count = await ContactMessage.countDocuments({ status: "unread" });

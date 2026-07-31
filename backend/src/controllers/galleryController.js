@@ -5,6 +5,7 @@ const Service = require("../models/Service");
 const cloudinary = require("../config/cloudinary");
 
 exports.createImage = async (req, res) => {
+  if (!req.file) return res.status(400).json({ message: "An image is required" });
   const upload = await cloudinary.uploader.upload(req.file.path);
 
   const image = await GalleryImage.create({
@@ -33,20 +34,21 @@ exports.getUnifiedGallery = async (req, res) => {
     (p.images || []).map(img => ({
       imageUrl: img,
       category: "projects",
-      title: p.title
+      title: p.title,
+      source: "project"
     }))
   );
 
-  const serviceImages = services.map(s => ({
-    imageUrl: s.imageUrl,
-    category: "services",
-    title: s.title
-  }));
+  const serviceImages = services.flatMap(s =>
+    (s.images || []).map(imageUrl => ({ imageUrl, category: "services", title: s.title, source: "service" }))
+  );
 
   const galleryImages = gallery.map(g => ({
-    imageUrl: g.imageUrl,
-    category: g.category,
-    title: g.title
+      imageUrl: g.imageUrl,
+      category: g.category,
+      title: g.title,
+      _id: g._id,
+      source: "gallery"
   }));
 
   res.json([

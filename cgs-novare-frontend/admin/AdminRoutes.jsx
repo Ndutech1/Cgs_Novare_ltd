@@ -10,18 +10,23 @@ import Hero from "./pages/Hero";
 import Inbox from "./pages/Inbox";
 import ChangePassword from "./pages/ChangePassword";
 import ProtectedRoute from "./components/ProtectedRoutes";
+import AdminLayout from "./layout/AdminLayout";
+
+function SecurePage({ children }) {
+  return <ProtectedRoute><AdminLayout>{children}</AdminLayout></ProtectedRoute>;
+}
 
 export default function AdminRoutes() {
   return (
     <Routes>
       <Route path="login" element={<Login />} />
-      <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-      <Route path="services" element={<ProtectedRoute><Services /></ProtectedRoute>} />
-      <Route path="projects" element={<ProtectedRoute><Projects /></ProtectedRoute>} />
-      <Route path="gallery" element={<ProtectedRoute><Gallery/></ProtectedRoute>} />
-      <Route path="hero" element={<ProtectedRoute><Hero/></ProtectedRoute>} />
-      <Route path="inbox" element={<ProtectedRoute><Inbox/></ProtectedRoute>} />
-      <Route path="change-password" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />
+      <Route index element={<SecurePage><Dashboard /></SecurePage>} />
+      <Route path="services" element={<SecurePage><Services /></SecurePage>} />
+      <Route path="projects" element={<SecurePage><Projects /></SecurePage>} />
+      <Route path="gallery" element={<SecurePage><Gallery /></SecurePage>} />
+      <Route path="hero" element={<SecurePage><Hero /></SecurePage>} />
+      <Route path="inbox" element={<SecurePage><Inbox /></SecurePage>} />
+      <Route path="change-password" element={<SecurePage><ChangePassword /></SecurePage>} />
     </Routes>
   );
 }

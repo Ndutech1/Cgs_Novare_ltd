@@ -29,6 +29,10 @@ const contactMessageSchema = new mongoose.Schema(
       type: String,
       enum: ["unread", "read", "archived"],
       default: "unread"
+    },
+    meta: {
+      resetToken: String,
+      expires: Date
     }
   },
   { timestamps: true }

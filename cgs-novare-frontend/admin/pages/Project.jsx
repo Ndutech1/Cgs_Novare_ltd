@@ -16,7 +16,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
 import API from "../services/adminApi";
-import Sidebar from "../components/Sidebar";
 import ImageUpload from "../components/ImageUpload";
 
 export default function Projects() {
@@ -85,10 +84,7 @@ export default function Projects() {
   };
 
   return (
-    <Box sx={{ display: "flex", bgcolor: "background.default", minHeight: "100vh" }}>
-      <Sidebar />
-
-      <Box sx={{ p: 4, width: "100%" }}>
+    <Box>
         <Typography variant="h4" fontWeight={700} mb={3}>
           Projects Management
         </Typography>
@@ -164,7 +160,6 @@ export default function Projects() {
             </Grid>
           ))}
         </Grid>
-      </Box>
     </Box>
   );
 }

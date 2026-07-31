@@ -14,7 +14,6 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import API from "../services/adminApi";
-import Sidebar from "../components/Sidebar";
 import ImageUpload from "../components/ImageUpload";
 
 export default function Gallery() {
@@ -47,10 +46,7 @@ export default function Gallery() {
   };
 
   return (
-    <Box sx={{ display: "flex", bgcolor: "background.default", minHeight: "100vh" }}>
-      <Sidebar />
-
-      <Box sx={{ p: 4, width: "100%" }}>
+    <Box>
         <Card sx={{ p: 4, mb: 4 }}>
           <Typography variant="h5" fontWeight={600}>
             Gallery Manager
@@ -73,8 +69,8 @@ export default function Gallery() {
         </Card>
 
         <Grid container spacing={3}>
-          {images.map(img => (
-            <Grid item xs={12} md={4} key={img._id}>
+          {images.map((img, index) => (
+            <Grid item xs={12} md={4} key={img._id || `${img.source}-${index}`}>
               <Card
                 sx={{
                   overflow: "hidden",
@@ -94,15 +90,12 @@ export default function Gallery() {
                   }}
                 >
                   <Typography variant="body2">{img.category}</Typography>
-                  <IconButton color="error" onClick={() => remove(img._id)}>
-                    <DeleteIcon />
-                  </IconButton>
+                  {img.source === "gallery" ? <IconButton color="error" onClick={() => remove(img._id)} aria-label="Delete image"><DeleteIcon /></IconButton> : <Typography variant="caption" color="text.secondary">Managed in {img.source}s</Typography>}
                 </CardContent>
               </Card>
             </Grid>
           ))}
         </Grid>
-      </Box>
     </Box>
   );
 }

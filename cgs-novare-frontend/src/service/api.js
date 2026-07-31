@@ -2,7 +2,8 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
+  timeout: 15000
 });
 
 // ✅ NORMALIZED RESPONSES
@@ -15,7 +16,7 @@ export const fetchGalleryImages = async () => {
 export const fetchHeroes = async () => {
   const res = await API.get("/hero");
   return res.data;
-}
+};
 
 export const fetchServices = async () => {
   const res = await API.get("/services");

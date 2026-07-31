@@ -1,82 +1,40 @@
-//cgs-novare-frontend/src/components/contactForm.jsx
 import { useState } from "react";
-import { TextField, Button, MenuItem, Box, Typography } from "@mui/material";
+import { TextField, Button, MenuItem, Box, Typography, Alert, Stack } from "@mui/material";
 import { motion } from "framer-motion";
 import API from "../service/api";
 
-const servicesOptions = [
-  "Technology & Innovation",
-  "Business Consulting",
-  "Engineering & Infrastructure",
-  "Trade & Logistics",
-  "Training & Human Development",
-  "Other"
-];
+const serviceOptions = ["Technology & Innovation", "Business Consulting", "Engineering & Infrastructure", "Trade & Logistics", "Training & Human Development", "Other"];
+const initialForm = { name: "", email: "", phone: "", service: serviceOptions[0], message: "" };
 
 export default function ContactForm() {
-  const [form, setForm] = useState({
-    name: "", email: "", phone: "", service: servicesOptions[0], message: ""
-  });
-
-  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
-
-  const handleSubmit = async e => {
-    e.preventDefault();
-    await API.post("/contact", form);
-    alert("Thank you! Your inquiry has been sent.");
-    setForm({ name: "", email: "", phone: "", service: servicesOptions[0], message: "" });
+  const [form, setForm] = useState(initialForm);
+  const [state, setState] = useState({ loading: false, error: "", success: "" });
+  const change = event => setForm(current => ({ ...current, [event.target.name]: event.target.value }));
+  const submit = async event => {
+    event.preventDefault();
+    try {
+      setState({ loading: true, error: "", success: "" });
+      await API.post("/contact", form);
+      setForm(initialForm);
+      setState({ loading: false, error: "", success: "Thanks — your inquiry is on its way. We'll be in touch shortly." });
+    } catch (error) {
+      setState({ loading: false, success: "", error: error.response?.data?.message || "We couldn't send your message. Please try again." });
+    }
   };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.7 }}
-    >
-      <Box
-        component="form"
-        maxWidth={600}
-        mx="auto"
-        p={4}
-        sx={{
-          borderRadius: 3,
-          boxShadow: 4,
-          background: "linear-gradient(135deg, #007bff11, #00c6ff11)"
-        }}
-        onSubmit={handleSubmit}
-      >
-        <Typography variant="h5" mb={3} fontWeight={700} textAlign="center">
-          Send Us a Message
-        </Typography>
-
-        <TextField fullWidth label="Name" name="name" required sx={{ mb: 2 }} onChange={handleChange} />
-        <TextField fullWidth label="Email" type="email" name="email" required sx={{ mb: 2 }} onChange={handleChange} />
-        <TextField fullWidth label="Phone" name="phone" sx={{ mb: 2 }} onChange={handleChange} />
-
-        <TextField fullWidth select label="Service Interested In" name="service" sx={{ mb: 2 }} value={form.service} onChange={handleChange}>
-          {servicesOptions.map(s => <MenuItem key={s} value={s}>{s}</MenuItem>)}
-        </TextField>
-
-        <TextField fullWidth multiline rows={4} label="Message" name="message" required sx={{ mb: 3 }} onChange={handleChange} />
-
-        <Button
-          variant="contained"
-          size="large"
-          type="submit"
-          sx={{
-            borderRadius: "50px",
-            px: 5,
-            py: 1.5,
-            fontWeight: 700,
-            background: "linear-gradient(45deg, #007bff, #00c6ff)",
-            transition: "0.3s",
-            "&:hover": { transform: "scale(1.05)", background: "linear-gradient(45deg, #00c6ff, #007bff)" }
-          }}
-        >
-          Send Inquiry
-        </Button>
-      </Box>
-    </motion.div>
-  );
+  return <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+    <Box component="form" onSubmit={submit} noValidate maxWidth={650} mx="auto" p={{ xs: 3, sm: 5 }} sx={{ borderRadius: 4, bgcolor: "background.paper", boxShadow: "0 18px 50px rgba(20,52,88,.12)" }}>
+      <Typography variant="h4" fontWeight={800}>Start a conversation</Typography>
+      <Typography color="text.secondary" sx={{ mt: 1, mb: 4 }}>Tell us a little about your goals and the right team will respond.</Typography>
+      <Stack spacing={2.25}>
+        <TextField fullWidth label="Full name" name="name" required value={form.name} onChange={change} />
+        <TextField fullWidth label="Work email" type="email" name="email" required value={form.email} onChange={change} />
+        <TextField fullWidth label="Phone number (optional)" name="phone" value={form.phone} onChange={change} />
+        <TextField fullWidth select label="I'm interested in" name="service" value={form.service} onChange={change}>{serviceOptions.map(option => <MenuItem key={option} value={option}>{option}</MenuItem>)}</TextField>
+        <TextField fullWidth multiline rows={5} label="How can we help?" name="message" required value={form.message} onChange={change} />
+        {state.error && <Alert severity="error">{state.error}</Alert>}
+        {state.success && <Alert severity="success">{state.success}</Alert>}
+        <Button variant="contained" size="large" type="submit" disabled={state.loading}>{state.loading ? "Sending…" : "Send inquiry"}</Button>
+      </Stack>
+    </Box>
+  </motion.div>;
 }

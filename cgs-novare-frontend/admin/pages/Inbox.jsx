@@ -6,7 +6,6 @@ import {
 import {
   Delete, Archive, MarkEmailRead
 } from "@mui/icons-material";
-import Sidebar from "../components/Sidebar";
 import API from "../services/adminApi";
 
 export default function Inbox() {
@@ -44,11 +43,8 @@ export default function Inbox() {
   );
 
   return (
-    <Box sx={{ display: "flex", bgcolor: "#0b1e34", minHeight: "100vh" }}>
-      <Sidebar open />
-
-      <Box sx={{ p: 4, width: "100%" }}>
-        <Typography variant="h4" fontWeight={700} color="white">
+    <Box>
+        <Typography variant="h4" fontWeight={800}>
           Inbox
         </Typography>
 
@@ -59,7 +55,7 @@ export default function Inbox() {
             label="Search"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            sx={{ bgcolor: "#102a43", borderRadius: 1 }}
+            sx={{ bgcolor: "#fff", borderRadius: 1 }}
           />
 
           <TextField
@@ -68,7 +64,7 @@ export default function Inbox() {
             label="Status"
             value={filter}
             onChange={e => setFilter(e.target.value)}
-            sx={{ bgcolor: "#102a43", borderRadius: 1 }}
+            sx={{ bgcolor: "#fff", borderRadius: 1 }}
           >
             <MenuItem value="all">All</MenuItem>
             <MenuItem value="unread">Unread</MenuItem>
@@ -82,8 +78,6 @@ export default function Inbox() {
             <Grid item xs={12} key={msg._id}>
               <Card
                 sx={{
-                  bgcolor: "#102a43",
-                  color: "white",
                   borderLeft: msg.status === "unread" ? "4px solid #4caf50" : "none"
                 }}
               >
@@ -150,7 +144,6 @@ export default function Inbox() {
             </Grid>
           ))}
         </Grid>
-      </Box>
     </Box>
   );
 }

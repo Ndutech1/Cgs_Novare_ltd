@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 
 import API from "../services/adminApi";
-import Sidebar from "../components/Sidebar";
 
 export default function ChangePassword() {
   const [currentPassword, setCurrent] = useState("");
@@ -39,10 +38,7 @@ export default function ChangePassword() {
   };
 
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "background.default" }}>
-      <Sidebar />
-
-      <Box sx={{ flexGrow: 1, p: 4 }}>
+    <Box>
         <Card
           sx={{
             maxWidth: 480,
@@ -85,7 +81,6 @@ export default function ChangePassword() {
             {loading ? "Updating..." : "Update Password"}
           </Button>
         </Card>
-      </Box>
     </Box>
   );
 }

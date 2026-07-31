@@ -7,6 +7,9 @@ const ContactMessage = require("../models/ContactMessage");
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
+  if (!email || !password || !process.env.JWT_SECRET) {
+    return res.status(400).json({ message: "Email and password are required" });
+  }
 
   const admin = await Admin.findOne({ email });
   if (!admin) return res.status(401).json({ message: "Invalid credentials" });
@@ -26,6 +29,9 @@ exports.login = async (req, res) => {
 exports.changePassword = async (req, res) => {
   const { currentPassword, newPassword } = req.body;
 
+  if (!currentPassword || !newPassword || newPassword.length < 8) {
+    return res.status(400).json({ message: "Use a new password with at least 8 characters." });
+  }
   const admin = await Admin.findById(req.adminId);
   if (!admin) {
     return res.status(404).json({ message: "Admin not found" });

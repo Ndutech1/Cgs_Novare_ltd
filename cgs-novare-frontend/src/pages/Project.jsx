@@ -10,7 +10,7 @@ const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, tra
 export default function Projects() {
   const [projects, setProjects] = useState([]);
 
-  useEffect(() => { fetchProjects().then(setProjects).catch(console.error); }, []);
+  useEffect(() => { fetchProjects().then(setProjects).catch(() => setProjects([])); }, []);
 
   return (
     <Box>
@@ -35,6 +35,7 @@ export default function Projects() {
             </Grid>
           ))}
         </Grid>
+        {!projects.length && <Typography textAlign="center" color="text.secondary" sx={{ py: 7 }}>Our latest project stories will be available here soon.</Typography>}
       </Container>
     </Box>
   );
