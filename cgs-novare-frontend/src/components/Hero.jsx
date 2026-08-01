@@ -1,4 +1,5 @@
 import { Box, Typography, Button, Stack } from "@mui/material";
+import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade } from "swiper/modules";
 import { motion } from "framer-motion";
@@ -96,9 +97,10 @@ export default function Hero({ heroSlides = [] }) {
                     background: "linear-gradient(45deg, #007bff, #00c6ff)",
                     "&:hover": { transform: "scale(1.05)" },
                   }}
-                  href="/services"
+                  component={Link}
+                  to="/contact"
                 >
-                  Explore Our Services
+                  Get a Quote
                 </Button>
 
                 <Button
@@ -112,9 +114,10 @@ export default function Hero({ heroSlides = [] }) {
                     fontWeight: 700,
                     borderWidth: 2,
                   }}
-                  href="/contact"
+                  component={Link}
+                  to="/projects"
                 >
-                  Contact Us Today
+                  View Our Projects
                 </Button>
               </Stack>
             </Box>
