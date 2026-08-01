@@ -3,17 +3,18 @@ import {
   Box,
   Typography,
   Grid,
-  Tabs,
-  Tab,
   Dialog,
-  Container
+  Container,
+  Chip,
+  Stack,
+  Button
 } from "@mui/material";
 import { fetchGalleryImages } from "../service/api";
 import { motion } from "framer-motion";
 
 export default function Gallery() {
   const [images, setImages] = useState([]);
-  const [category, setCategory] = useState("all");
+  const [selectedCategories, setSelectedCategories] = useState([]); // empty array => show all
   const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
@@ -22,10 +23,11 @@ export default function Gallery() {
       .catch(() => setImages([]));
   }, []);
 
-  const filtered =
-    category === "all"
-      ? images
-      : images.filter(img => img.category === category);
+  const normalize = (s) => (s || "gallery").toString().trim().toLowerCase().replace(/\s+/g, "-");
+
+  const filtered = selectedCategories.length === 0
+    ? images
+    : images.filter(img => selectedCategories.includes(normalize(img.category)));
 
   return (
     <Box>
@@ -48,25 +50,38 @@ export default function Gallery() {
       </Box>
 
       <Container sx={{ py: 6 }}>
-        {/* Dynamic category tabs (includes requested filters like Construction, Design, Smart Home) */}
-        <Tabs
-          value={category}
-          onChange={(e, v) => setCategory(v)}
-          centered
-          sx={{ mb: 4, overflowX: "auto" }}
-        >
-          {/* Build a set of categories from images and include common fallbacks */}
-          {(() => {
-            const fallbacks = ["construction", "design", "smart-home"];
-            const set = new Set(images.map(i => (i.category || "gallery").toLowerCase()));
-            fallbacks.forEach(f => set.add(f));
-            // ensure projects/services/marketing/hero/gallery are present as well
-            ["projects", "services", "marketing", "hero", "gallery"].forEach(f => set.add(f));
-            const categories = ["all", ...Array.from(set)];
-            const label = s => (s === "all" ? "All" : s.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase()));
-            return categories.map(cat => <Tab key={cat} label={label(cat)} value={cat} />);
-          })()}
-        </Tabs>
+        {/* Category filters (multi-select chips) */}
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={{ hidden:{opacity:0,y:20}, visible:{opacity:1,y:0} }}>
+          <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 3, flexWrap: "wrap" }}>
+            <Chip
+              label="All"
+              clickable
+              color={selectedCategories.length === 0 ? "primary" : "default"}
+              onClick={() => setSelectedCategories([])}
+            />
+            {(() => {
+              const fallbacks = ["construction", "design", "smart-home"];
+              const set = new Set(images.map(i => normalize(i.category)));
+              fallbacks.forEach(f => set.add(f));
+              ["projects", "services", "marketing", "hero", "gallery"].forEach(f => set.add(f));
+              const categories = Array.from(set);
+              const label = s => s.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+              return categories.map(cat => {
+                const active = selectedCategories.includes(cat);
+                return (
+                  <Chip
+                    key={cat}
+                    label={label(cat)}
+                    color={active ? "primary" : "default"}
+                    clickable
+                    onClick={() => setSelectedCategories(curr => active ? curr.filter(c => c !== cat) : [...curr, cat])}
+                  />
+                );
+              });
+            })()}
+            {selectedCategories.length > 0 && <Button size="small" onClick={() => setSelectedCategories([])}>Clear</Button>}
+          </Stack>
+        </motion.div>
 
         <Grid container spacing={3}>
           {filtered.map((img, i) => (
