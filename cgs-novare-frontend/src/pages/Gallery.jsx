@@ -48,16 +48,24 @@ export default function Gallery() {
       </Box>
 
       <Container sx={{ py: 6 }}>
+        {/* Dynamic category tabs (includes requested filters like Construction, Design, Smart Home) */}
         <Tabs
           value={category}
           onChange={(e, v) => setCategory(v)}
           centered
-          sx={{ mb: 4 }}
+          sx={{ mb: 4, overflowX: "auto" }}
         >
-          <Tab label="All" value="all" />
-          <Tab label="Projects" value="projects" />
-          <Tab label="Services" value="services" />
-          <Tab label="Marketing" value="marketing" />
+          {/* Build a set of categories from images and include common fallbacks */}
+          {(() => {
+            const fallbacks = ["construction", "design", "smart-home"];
+            const set = new Set(images.map(i => (i.category || "gallery").toLowerCase()));
+            fallbacks.forEach(f => set.add(f));
+            // ensure projects/services/marketing/hero/gallery are present as well
+            ["projects", "services", "marketing", "hero", "gallery"].forEach(f => set.add(f));
+            const categories = ["all", ...Array.from(set)];
+            const label = s => (s === "all" ? "All" : s.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase()));
+            return categories.map(cat => <Tab key={cat} label={label(cat)} value={cat} />);
+          })()}
         </Tabs>
 
         <Grid container spacing={3}>

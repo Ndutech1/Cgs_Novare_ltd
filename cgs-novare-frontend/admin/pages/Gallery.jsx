@@ -55,9 +55,13 @@ export default function Gallery() {
           <Box sx={{ display: "flex", gap: 2, mt: 3, flexWrap: "wrap" }}>
             <Select value={category} onChange={e => setCategory(e.target.value)}>
               <MenuItem value="hero">Hero</MenuItem>
+              <MenuItem value="projects">Projects</MenuItem>
               <MenuItem value="services">Services</MenuItem>
               <MenuItem value="marketing">Marketing</MenuItem>
               <MenuItem value="gallery">Gallery</MenuItem>
+              <MenuItem value="construction">Construction</MenuItem>
+              <MenuItem value="design">Design</MenuItem>
+              <MenuItem value="smart-home">Smart Home</MenuItem>
             </Select>
 
             <ImageUpload onChange={e => setFile(e.target.files[0])} />
