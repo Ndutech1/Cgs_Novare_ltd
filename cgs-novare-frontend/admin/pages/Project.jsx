@@ -24,6 +24,8 @@ export default function Projects() {
     title: "",
     client: "",
     category: "",
+    location: "",
+    servicesUsed: "",
     description: "",
     results: ""
   });
@@ -58,6 +60,8 @@ export default function Projects() {
       title: "",
       client: "",
       category: "",
+      location: "",
+      servicesUsed: "",
       description: "",
       results: ""
     });
@@ -71,6 +75,8 @@ export default function Projects() {
       title: project.title || "",
       client: project.client || "",
       category: project.category || "",
+      location: project.location || "",
+      servicesUsed: Array.isArray(project.servicesUsed) ? project.servicesUsed.join(", ") : project.servicesUsed || "",
       description: project.description || "",
       results: project.results || ""
     });
@@ -99,6 +105,8 @@ export default function Projects() {
           <TextField fullWidth label="Project Title" name="title" value={form.title} onChange={handleChange} sx={{ mb: 2 }} />
           <TextField fullWidth label="Client" name="client" value={form.client} onChange={handleChange} sx={{ mb: 2 }} />
           <TextField fullWidth label="Category" name="category" value={form.category} onChange={handleChange} sx={{ mb: 2 }} />
+          <TextField fullWidth label="Project Location" name="location" value={form.location} onChange={handleChange} sx={{ mb: 2 }} />
+          <TextField fullWidth label="Services Used" name="servicesUsed" helperText="Separate services with commas" value={form.servicesUsed} onChange={handleChange} sx={{ mb: 2 }} />
           <TextField fullWidth label="Description" name="description" multiline rows={3} value={form.description} onChange={handleChange} sx={{ mb: 2 }} />
           <TextField fullWidth label="Results / Impact" name="results" multiline rows={2} value={form.results} onChange={handleChange} sx={{ mb: 2 }} />
 

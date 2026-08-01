@@ -11,9 +11,13 @@ const uploadImages = async (files = []) => {
 
 exports.createProject = async (req, res) => {
   const images = req.files ? await uploadImages(req.files) : [];
+  const servicesUsed = typeof req.body.servicesUsed === "string"
+    ? req.body.servicesUsed.split(",").map(item => item.trim()).filter(Boolean)
+    : req.body.servicesUsed || [];
 
   const project = await Project.create({
     ...req.body,
+    servicesUsed,
     images
   });
 
@@ -27,6 +31,9 @@ exports.getProjects = async (req, res) => {
 
 exports.updateProject = async (req, res) => {
   const updateData = { ...req.body };
+  if (typeof updateData.servicesUsed === "string") {
+    updateData.servicesUsed = updateData.servicesUsed.split(",").map(item => item.trim()).filter(Boolean);
+  }
 
   if (req.files?.length) {
     updateData.images = await uploadImages(req.files);

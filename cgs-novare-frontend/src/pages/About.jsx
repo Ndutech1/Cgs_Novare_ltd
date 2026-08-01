@@ -1,23 +1,11 @@
-import {
-  Box,
-  Typography,
-  Container,
-  Grid,
-  Paper,
-  Divider,
-  Stack
-} from "@mui/material";
-import { motion } from "framer-motion";
-import LightbulbIcon from '@mui/icons-material/Lightbulb';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
-import HandshakeIcon from '@mui/icons-material/Handshake';
+import { Box, Card, CardContent, Container, Grid, Stack, Typography } from "@mui/material";
+import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
+import PublicIcon from "@mui/icons-material/Public";
+import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
-};
+const values = ["Integrity — transparent, accountable work.", "Innovation — practical ideas that improve outcomes.", "Excellence — professional standards at every stage.", "Collaboration — partnerships built for shared success."];
+const presence = [["🇳🇬", "Nigeria"], ["🇱🇷", "Liberia"], ["🇨🇦", "Canada"], ["🇸🇳", "Senegal"]];
 
 export default function About() {
   return (
@@ -272,4 +260,12 @@ export default function About() {
       <Box sx={{ height: 60 }} />
     </Box>
   );
+  return <Box>
+    <Box sx={{ py: { xs: 7, md: 11 }, bgcolor: "#102a43", color: "#fff", textAlign: "center" }}><Container><Typography color="#8ed1ff" fontWeight={800} textTransform="uppercase" letterSpacing={1.5}>About CGS Novare</Typography><Typography variant="h2" sx={{ mt: 1 }}>Built on expertise. Focused on lasting value.</Typography><Typography sx={{ maxWidth: 760, mx: "auto", mt: 2, color: "#c4d4e4" }}>A multidisciplinary partner combining technical capability, local insight and a disciplined approach to delivery.</Typography></Container></Box>
+    <Container sx={{ py: { xs: 7, md: 11 } }}><Grid container spacing={7} alignItems="center"><Grid item xs={12} md={6}><Typography color="primary" fontWeight={800} textTransform="uppercase" letterSpacing={1.5}>Our story</Typography><Typography variant="h3" sx={{ mt: 1 }}>More than a service provider.</Typography></Grid><Grid item xs={12} md={6}><Typography color="text.secondary" lineHeight={1.85}>CGS Novare was established to create sustainable value through construction, design, engineering, technology and business expertise. We bring global good practice and local market understanding together, helping organisations and communities move confidently from idea to impact.</Typography></Grid></Grid>
+      <Grid container spacing={3}><Grid item xs={12} md={6}><Card sx={{ height: "100%" }}><CardContent sx={{ p: 4 }}><LightbulbOutlinedIcon color="primary" /><Typography variant="h5" fontWeight={800} sx={{ mt: 2 }}>Our mission</Typography><Typography color="text.secondary" sx={{ mt: 1.5 }}>To deliver innovative, value-driven solutions that enable sustainable growth through technology, strategy and partnership.</Typography></CardContent></Card></Grid><Grid item xs={12} md={6}><Card sx={{ height: "100%" }}><CardContent sx={{ p: 4 }}><VisibilityOutlinedIcon color="primary" /><Typography variant="h5" fontWeight={800} sx={{ mt: 2 }}>Our vision</Typography><Typography color="text.secondary" sx={{ mt: 1.5 }}>To be a globally recognised brand known for reliability, innovation and transformational excellence.</Typography></CardContent></Card></Grid></Grid>
+    </Container>
+    <Box sx={{ py: { xs: 7, md: 10 }, bgcolor: "#edf4fa" }}><Container><Grid container spacing={5} alignItems="center"><Grid item xs={12} md={6}><Typography color="primary" fontWeight={800} textTransform="uppercase" letterSpacing={1.5}>Professional capability</Typography><Typography variant="h3" sx={{ mt: 1 }}>Registered professionals. Multidisciplinary delivery.</Typography><Typography color="text.secondary" sx={{ mt: 2 }}>Our teams bring the appropriate professional discipline to each scope, with a commitment to quality, safety and clear accountability.</Typography></Grid><Grid item xs={12} md={6}><Card><CardContent sx={{ p: 4 }}><Stack direction="row" spacing={2} alignItems="center"><VerifiedUserOutlinedIcon color="primary" sx={{ fontSize: 42 }} /><Box><Typography fontWeight={800}>Qualified project teams</Typography><Typography variant="body2" color="text.secondary">Construction, planning, engineering, technology and consulting expertise.</Typography></Box></Stack></CardContent></Card></Grid></Grid></Container></Box>
+    <Container sx={{ py: { xs: 7, md: 10 } }}><Grid container spacing={6}><Grid item xs={12} md={7}><Typography color="primary" fontWeight={800} textTransform="uppercase" letterSpacing={1.5}>Our values</Typography><Stack spacing={1.5} sx={{ mt: 2 }}>{values.map(value => <Typography key={value} sx={{ pl: 2, borderLeft: "3px solid", borderColor: "primary.main" }}>{value}</Typography>)}</Stack></Grid><Grid item xs={12} md={5}><PublicIcon color="primary" /><Typography variant="h4" sx={{ mt: 1 }}>Regional presence</Typography><Typography color="text.secondary" sx={{ mt: 1 }}>Our outlook and partnerships extend across markets.</Typography><Stack direction="row" useFlexGap flexWrap="wrap" gap={1.5} sx={{ mt: 2 }}>{presence.map(([flag, place]) => <Card key={place} variant="outlined"><CardContent sx={{ py: 1, px: 1.5, "&:last-child": { pb: 1 } }}>{flag} {place}</CardContent></Card>)}</Stack></Grid></Grid></Container>
+  </Box>;
 }

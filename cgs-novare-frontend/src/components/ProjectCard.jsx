@@ -11,6 +11,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import { motion } from "framer-motion";
 import WorkIcon from "@mui/icons-material/Work";
+import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import { useState } from "react";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -77,6 +78,12 @@ export default function ProjectCard({ project }) {
             </Typography>
           )}
 
+          {project.location && (
+            <Typography variant="body2" color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: .5, mt: 1 }}>
+              <LocationOnOutlinedIcon fontSize="small" /> {project.location}
+            </Typography>
+          )}
+
           {/* DESCRIPTION */}
           <Collapse in={open} collapsedSize={72}>
             <Box component="ul" sx={{ pl: 2, mt: 1 }}>
@@ -100,6 +107,12 @@ export default function ProjectCard({ project }) {
           >
             {open ? "Show less" : "Learn more →"}
           </Button>
+
+          {project.servicesUsed?.length > 0 && (
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: .75, mt: 2 }}>
+              {project.servicesUsed.map(service => <Chip key={service} size="small" variant="outlined" label={service} />)}
+            </Box>
+          )}
 
           {project.results && (
             <Box sx={{ mt: 2 }}>
