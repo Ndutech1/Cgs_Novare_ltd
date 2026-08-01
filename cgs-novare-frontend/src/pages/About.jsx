@@ -176,6 +176,98 @@ export default function About() {
         </Container>
       </Box>
 
+      {/* TEAM / CREDENTIALS */}
+      <Container sx={{ py: 8 }}>
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+          <Typography variant="h4" fontWeight={700} mb={3}>Our Team</Typography>
+          <Typography sx={{ mb: 3 }}>A multidisciplinary team of registered professionals and experienced specialists across engineering, technology, project management and business advisory.</Typography>
+          <Grid container spacing={3}>
+            {[{
+              name: "Engr. (Dr.) A. B. Adeoye",
+              title: "Chief Engineer",
+              creds: "Registered Engineer (Council of Nigeria) — R-12345"
+            }, {
+              name: "Mrs. S. K. Johnson",
+              title: "Head of Projects",
+              creds: "Project Management Professional (PMP) — PMP-67890"
+            }, {
+              name: "Mr. T. O. Mensah",
+              title: "Senior Consultant — Trade & Logistics",
+              creds: "Registered Logistics Professional — L-11223"
+            }].map((member, i) => (
+              <Grid item xs={12} md={4} key={i}>
+                <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: i * 0.12 }} viewport={{ once: true }}>
+                  <Paper elevation={2} sx={{ p: 3, borderRadius: 2 }}>
+                    <Stack spacing={1}>
+                      <Typography fontWeight={800}>{member.name}</Typography>
+                      <Typography color="text.secondary">{member.title}</Typography>
+                      <Divider />
+                      <Typography variant="body2">{member.creds}</Typography>
+                    </Stack>
+                  </Paper>
+                </motion.div>
+              </Grid>
+            ))}
+          </Grid>
+        </motion.div>
+      </Container>
+
+      {/* LOCATIONS / PRESENCE */}
+      <Box sx={{ py: 6, background: "linear-gradient(90deg,#f8fbff,#fff)" }}>
+        <Container>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+            <Typography variant="h5" fontWeight={700} mb={2}>Locations & Presence</Typography>
+            <Typography sx={{ mb: 2 }}>We operate across multiple jurisdictions to better serve clients and partners.</Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={6}>
+                <Paper elevation={1} sx={{ p: 3, borderRadius: 2 }}>
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    <Typography fontSize={28}>🇳🇬</Typography>
+                    <div>
+                      <Typography fontWeight={800}>Nigeria</Typography>
+                      <Typography variant="body2" color="text.secondary">Head office — Lagos</Typography>
+                    </div>
+                  </Stack>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Paper elevation={1} sx={{ p: 3, borderRadius: 2 }}>
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    <Typography fontSize={28}>🇱🇷</Typography>
+                    <div>
+                      <Typography fontWeight={800}>Liberia</Typography>
+                      <Typography variant="body2" color="text.secondary">Local presence — Monrovia</Typography>
+                    </div>
+                  </Stack>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Paper elevation={1} sx={{ p: 3, borderRadius: 2 }}>
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    <Typography fontSize={28}>🇨🇦</Typography>
+                    <div>
+                      <Typography fontWeight={800}>Canada</Typography>
+                      <Typography variant="body2" color="text.secondary">Representative office — Toronto</Typography>
+                    </div>
+                  </Stack>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Paper elevation={1} sx={{ p: 3, borderRadius: 2 }}>
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    <Typography fontSize={28}>🇸🇳</Typography>
+                    <div>
+                      <Typography fontWeight={800}>Senegal</Typography>
+                      <Typography variant="body2" color="text.secondary">Regional presence — Dakar</Typography>
+                    </div>
+                  </Stack>
+                </Paper>
+              </Grid>
+            </Grid>
+          </motion.div>
+        </Container>
+      </Box>
+
       {/* FOOTER SPACER */}
       <Box sx={{ height: 60 }} />
     </Box>
