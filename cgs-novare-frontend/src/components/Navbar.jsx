@@ -4,7 +4,7 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 
-const navItems = [["Home", "/"], ["About", "/about"], ["Services", "/services"], ["Projects", "/projects"], ["Gallery", "/gallery"]];
+const navItems = [["Home", "/"], ["About", "/about"], ["Services", "/services"], ["Projects", "/projects"], ["Architecture Studio", "/ai-architecture-studio"], ["Gallery", "/gallery"]];
 
 export default function Navbar() {
   const location = useLocation();

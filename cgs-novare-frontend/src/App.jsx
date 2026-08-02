@@ -9,6 +9,7 @@ import Gallery from "../../cgs-novare-frontend/src/pages/Gallery";
 import Services from "../../cgs-novare-frontend/src/pages/Services";
 import Projects from "../../cgs-novare-frontend/src/pages/Project";
 import Contact from "../../cgs-novare-frontend/src/pages/Contact";
+import AiArchitectureStudio from "./pages/AIArchitecture";
 
 // Admin routes
 import AdminRoutes from "../../cgs-novare-frontend/admin/AdminRoutes";
@@ -25,6 +26,7 @@ function App() {
           <Route path="/services" element={<Services />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/ai-architecture-studio" element={<AiArchitectureStudio />} />
         </Route>
 
         {/* ADMIN CMS */}
