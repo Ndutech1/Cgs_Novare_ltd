@@ -1,11 +1,14 @@
-import { Box, Card, CardContent, Container, Grid, Stack, Typography } from "@mui/material";
-import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
-import PublicIcon from "@mui/icons-material/Public";
-import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import { Box, Container, Grid, Stack, Typography, Paper, Divider } from "@mui/material";
+import { motion } from "framer-motion";
+import VerifiedUserIcon from "@mui/icons-material/VerifiedUserOutlined";
+import LightbulbIcon from "@mui/icons-material/LightbulbOutlined";
+import VisibilityIcon from "@mui/icons-material/VisibilityOutlined";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEventsOutlined";
 
-const values = ["Integrity — transparent, accountable work.", "Innovation — practical ideas that improve outcomes.", "Excellence — professional standards at every stage.", "Collaboration — partnerships built for shared success."];
-const presence = [["🇳🇬", "Nigeria"], ["🇱🇷", "Liberia"], ["🇨🇦", "Canada"], ["🇸🇳", "Senegal"]];
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+};
 
 export default function About() {
   return (
@@ -54,15 +57,29 @@ export default function About() {
         <Container>
           <Grid container spacing={4}>
             {[
-              { title: "Our Mission", icon: <LightbulbIcon sx={{ fontSize: 40, color: "#1976d2" }} />, text: "To deliver innovative, value-driven solutions that empower businesses and communities to achieve sustainable growth through technology, strategy, and partnership." },
-              { title: "Our Vision", icon: <VisibilityIcon sx={{ fontSize: 40, color: "#00c853" }} />, text: "To be a globally recognized brand known for innovation, reliability, and transformational excellence." },
-              { title: "Core Values", icon: <EmojiEventsIcon sx={{ fontSize: 40, color: "#ff9800" }} />, text: <>
-                <Typography>Integrity – Trust through transparency and ethics.</Typography>
-                <Typography>Innovation – Progress through creativity.</Typography>
-                <Typography>Excellence – Outstanding quality and professionalism.</Typography>
-                <Typography>Sustainability – Long-term value creation.</Typography>
-                <Typography>Collaboration – Partnering for shared success.</Typography>
-              </> },
+              { 
+                title: "Our Mission", 
+                icon: <LightbulbIcon sx={{ fontSize: 40, color: "#1976d2" }} />, 
+                text: "To deliver innovative, value-driven solutions that empower businesses and communities to achieve sustainable growth through technology, strategy, and partnership." 
+              },
+              { 
+                title: "Our Vision", 
+                icon: <VisibilityIcon sx={{ fontSize: 40, color: "#00c853" }} />, 
+                text: "To be a globally recognized brand known for innovation, reliability, and transformational excellence." 
+              },
+              { 
+                title: "Core Values", 
+                icon: <EmojiEventsIcon sx={{ fontSize: 40, color: "#ff9800" }} />, 
+                text: (
+                  <>
+                    <Typography variant="body2">Integrity – Trust through transparency and ethics.</Typography>
+                    <Typography variant="body2">Innovation – Progress through creativity.</Typography>
+                    <Typography variant="body2">Excellence – Outstanding quality and professionalism.</Typography>
+                    <Typography variant="body2">Sustainability – Long-term value creation.</Typography>
+                    <Typography variant="body2">Collaboration – Partnering for shared success.</Typography>
+                  </>
+                )
+              },
             ].map((card, i) => (
               <Grid item xs={12} md={4} key={i}>
                 <motion.div
@@ -84,7 +101,7 @@ export default function About() {
                     <Stack spacing={2} alignItems="center" textAlign="center">
                       {card.icon}
                       <Typography variant="h5" fontWeight={700}>{card.title}</Typography>
-                      <Typography variant="body2">{card.text}</Typography>
+                      <Typography variant="body2" component="div">{card.text}</Typography>
                     </Stack>
                   </Paper>
                 </motion.div>
@@ -170,19 +187,23 @@ export default function About() {
           <Typography variant="h4" fontWeight={700} mb={3}>Our Team</Typography>
           <Typography sx={{ mb: 3 }}>A multidisciplinary team of registered professionals and experienced specialists across engineering, technology, project management and business advisory.</Typography>
           <Grid container spacing={3}>
-            {[{
-              name: "Engr. (Dr.) A. B. Adeoye",
-              title: "Chief Engineer",
-              creds: "Registered Engineer (Council of Nigeria) — R-12345"
-            }, {
-              name: "Mrs. S. K. Johnson",
-              title: "Head of Projects",
-              creds: "Project Management Professional (PMP) — PMP-67890"
-            }, {
-              name: "Mr. T. O. Mensah",
-              title: "Senior Consultant — Trade & Logistics",
-              creds: "Registered Logistics Professional — L-11223"
-            }].map((member, i) => (
+            {[
+              {
+                name: "Engr. (Dr.) A. B. Adeoye",
+                title: "Chief Engineer",
+                creds: "Registered Engineer (Council of Nigeria) — R-12345"
+              }, 
+              {
+                name: "Mrs. S. K. Johnson",
+                title: "Head of Projects",
+                creds: "Project Management Professional (PMP) — PMP-67890"
+              }, 
+              {
+                name: "Mr. T. O. Mensah",
+                title: "Senior Consultant — Trade & Logistics",
+                creds: "Registered Logistics Professional — L-11223"
+              }
+            ].map((member, i) => (
               <Grid item xs={12} md={4} key={i}>
                 <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: i * 0.12 }} viewport={{ once: true }}>
                   <Paper elevation={2} sx={{ p: 3, borderRadius: 2 }}>
