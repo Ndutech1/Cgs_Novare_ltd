@@ -1,14 +1,15 @@
 import { Box, Button, Card, CardContent, Container, Grid, Stack, Typography } from "@mui/material";
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import { motion } from "framer-motion";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
-import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import ContactForm from "../components/ContactForm";
 
 const whatsapp = import.meta.env.VITE_WHATSAPP_URL;
 const email = import.meta.env.VITE_CONTACT_EMAIL;
 const phone = import.meta.env.VITE_CONTACT_PHONE;
 const mapUrl = import.meta.env.VITE_OFFICE_MAP_URL || "https://www.google.com/maps?q=CGS%20Novare%20Ltd&output=embed";
+const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } };
 
 export default function Contact() {
   return (
