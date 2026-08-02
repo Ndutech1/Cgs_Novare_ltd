@@ -45,9 +45,20 @@ export default function About() {
             Our Story
           </Typography>
           <Typography sx={{ maxWidth: 900 }}>
-            CGS Novare Ltd was founded to deliver sustainable value through a multidisciplinary approach,
-            integrating global best practices with deep local market intelligence. We focus on technology,
-            engineering, business consulting, logistics, and human development to empower businesses and communities.
+            CGS Novare Ltd is a multidisciplinary company committed to delivering sustainable value through innovative solutions and professional excellence. We combine global best practices with deep local market knowledge to provide high-quality services across technology, engineering, business consulting, logistics, and human development, helping businesses and communities achieve lasting growth.
+
+              We Are a Multidisciplinary Company 🇳🇬 🇱🇷 🇨🇦 🇸🇳
+
+              Our team consists of registered professionals, including:
+
+              - Registered Town Planners
+              - Registered Architects
+              - Registered Builders
+              - Registered Engineers (MEP)
+              - Registered Surveyors
+
+              At CGS Novare Ltd, we are dedicated to providing reliable, innovative, and sustainable solutions that meet the highest professional standards.
+
           </Typography>
         </motion.div>
       </Container>
@@ -189,17 +200,17 @@ export default function About() {
           <Grid container spacing={3}>
             {[
               {
-                name: "Engr. (Dr.) A. B. Adeoye",
-                title: "Chief Engineer",
+                name: "Engr. Godwin Solomon",
+                title: "Chief Engineer (CEO & Founder)",
                 creds: "Registered Engineer (Council of Nigeria) — R-12345"
               }, 
               {
-                name: "Mrs. S. K. Johnson",
-                title: "Head of Projects",
+                name: "Chidubem Benedict",
+                title: "IT & Software Solutions Lead",
                 creds: "Project Management Professional (PMP) — PMP-67890"
               }, 
               {
-                name: "Mr. T. O. Mensah",
+                name: "Mr. Emmanuel Okoro",
                 title: "Senior Consultant — Trade & Logistics",
                 creds: "Registered Logistics Professional — L-11223"
               }
@@ -234,7 +245,7 @@ export default function About() {
                     <Typography fontSize={28}>🇳🇬</Typography>
                     <div>
                       <Typography fontWeight={800}>Nigeria</Typography>
-                      <Typography variant="body2" color="text.secondary">Head office — Lagos</Typography>
+                      <Typography variant="body2" color="text.secondary">Head office — FCT Abuja</Typography>
                     </div>
                   </Stack>
                 </Paper>
@@ -245,7 +256,7 @@ export default function About() {
                     <Typography fontSize={28}>🇱🇷</Typography>
                     <div>
                       <Typography fontWeight={800}>Liberia</Typography>
-                      <Typography variant="body2" color="text.secondary">Local presence — Monrovia</Typography>
+                      <Typography variant="body2" color="text.secondary">Loading...</Typography>
                     </div>
                   </Stack>
                 </Paper>
@@ -256,7 +267,7 @@ export default function About() {
                     <Typography fontSize={28}>🇨🇦</Typography>
                     <div>
                       <Typography fontWeight={800}>Canada</Typography>
-                      <Typography variant="body2" color="text.secondary">Representative office — Toronto</Typography>
+                      <Typography variant="body2" color="text.secondary">Loading...</Typography>
                     </div>
                   </Stack>
                 </Paper>
@@ -267,7 +278,7 @@ export default function About() {
                     <Typography fontSize={28}>🇸🇳</Typography>
                     <div>
                       <Typography fontWeight={800}>Senegal</Typography>
-                      <Typography variant="body2" color="text.secondary">Regional presence — Dakar</Typography>
+                      <Typography variant="body2" color="text.secondary">Loading...</Typography>
                     </div>
                   </Stack>
                 </Paper>
