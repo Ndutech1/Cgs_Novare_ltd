@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Grid, Typography, CircularProgress, Container, Paper, Stack } from "@mui/material";
+import { Box, Grid, Typography, CircularProgress, Container, Paper } from "@mui/material";
 import { fetchServices } from "../service/api";
 import { motion } from "framer-motion";
 import ArchitectureOutlinedIcon from "@mui/icons-material/ArchitectureOutlined";
@@ -55,19 +55,30 @@ export default function Services() {
           {visibleServices.map((service, index) => (
             <Grid item xs={12} md={4} key={service._id || service.title}>
               <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: index * 0.08 }} viewport={{ once: true }}>
-                <Paper sx={{ p: 3, height: "100%", position: "relative" }}>
-                  <Box sx={{ position: "absolute", top: 12, left: 12, fontFamily: '"JetBrains Mono", monospace', color: "primary.main" }}>[+]</Box>
-                  <Box sx={{ position: "absolute", bottom: 12, right: 12, fontFamily: '"JetBrains Mono", monospace', color: "secondary.main" }}>[-]</Box>
-                  <Box sx={{ width: 48, height: 48, display: "grid", placeItems: "center", border: "1px solid", borderColor: "divider", color: "primary.main", mb: 2 }}>
-                    {service.icon || <EngineeringOutlinedIcon />}
+                <Paper sx={{ p: 0, height: "100%", position: "relative", overflow: "hidden" }}>
+                  <Box sx={{ position: "absolute", top: 12, left: 12, fontFamily: '"JetBrains Mono", monospace', color: "primary.main", zIndex: 1 }}>[+]</Box>
+                  <Box sx={{ position: "absolute", bottom: 12, right: 12, fontFamily: '"JetBrains Mono", monospace', color: "secondary.main", zIndex: 1 }}>[-]</Box>
+                  {service.images?.[0] || service.imageUrl ? (
+                    <Box component="img" src={service.images?.[0] || service.imageUrl} alt={service.title} sx={{ width: "100%", height: 180, objectFit: "cover" }} />
+                  ) : (
+                    <Box sx={{ height: 180, display: "flex", alignItems: "center", justifyContent: "center", bgcolor: "rgba(37, 99, 235, 0.08)" }}>
+                      <Box sx={{ width: 56, height: 56, display: "grid", placeItems: "center", border: "1px solid rgba(37, 99, 235, 0.2)", color: "primary.main", borderRadius: 2 }}>
+                        {service.icon || <EngineeringOutlinedIcon />}
+                      </Box>
+                    </Box>
+                  )}
+                  <Box sx={{ p: 3 }}>
+                    <Box sx={{ width: 48, height: 48, display: "grid", placeItems: "center", border: "1px solid", borderColor: "divider", color: "primary.main", mb: 2 }}>
+                      {service.icon || <EngineeringOutlinedIcon />}
+                    </Box>
+                    <Typography variant="h6" sx={{ mb: 1 }}>{service.title}</Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                      {service.description || "Engineering and delivery expertise tailored to your project goals."}
+                    </Typography>
+                    <Typography variant="caption" color="secondary.main" sx={{ display: "block", mt: 2 }}>
+                      FLEXIBLE / SCALABLE / PREMIUM
+                    </Typography>
                   </Box>
-                  <Typography variant="h6" sx={{ mb: 1 }}>{service.title}</Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
-                    {service.description || "Engineering and delivery expertise tailored to your project goals."}
-                  </Typography>
-                  <Typography variant="caption" color="secondary.main" sx={{ display: "block", mt: 2 }}>
-                    SPEC / BIM LOD 400
-                  </Typography>
                 </Paper>
               </motion.div>
             </Grid>
