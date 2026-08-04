@@ -21,10 +21,23 @@ const serviceFallbacks = [
   [SpeedIcon, "Execution Excellence", "Focused delivery with precision, speed and calm under pressure."]
 ];
 
+const getHeroMediaItems = (hero) => {
+  if (!hero) return [];
+  if (Array.isArray(hero.media) && hero.media.length) {
+    return hero.media;
+  }
+  if (hero.imageUrl) {
+    return [{ url: hero.imageUrl, type: "image" }];
+  }
+  return [];
+};
+
 export default function Home() {
   const [services, setServices] = useState([]);
   const [projects, setProjects] = useState([]);
   const [heroes, setHeroes] = useState([]);
+  const [activeHeroIndex, setActiveHeroIndex] = useState(0);
+  const [activeMediaIndex, setActiveMediaIndex] = useState(0);
 
   useEffect(() => {
     fetchServices().then(setServices).catch(() => setServices([]));
@@ -32,10 +45,35 @@ export default function Home() {
     fetchHeroes().then(setHeroes).catch(() => setHeroes([]));
   }, []);
 
-  const featuredHero = heroes[0] || null;
+  useEffect(() => {
+    if (!heroes.length) return;
+    const interval = setInterval(() => {
+      setActiveHeroIndex((prev) => (prev + 1) % heroes.length);
+      setActiveMediaIndex(0);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [heroes]);
+
+  useEffect(() => {
+    const mediaItems = getHeroMediaItems(heroes[activeHeroIndex]);
+    if (!mediaItems.length || mediaItems.length < 2) return;
+    const interval = setInterval(() => {
+      setActiveMediaIndex((prev) => (prev + 1) % mediaItems.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [activeHeroIndex, heroes]);
+
+  const featuredHero = heroes[activeHeroIndex] || null;
+  const heroMediaItems = getHeroMediaItems(featuredHero);
+  const currentMediaItem = heroMediaItems[activeMediaIndex] || heroMediaItems[0] || null;
   const shownServices = services.length
-    ? services.slice(0, 6).map((item) => [AutoAwesomeIcon, item.title, item.description])
-    : serviceFallbacks;
+    ? services.slice(0, 6).map((item) => ({
+        title: item.title,
+        description: item.description,
+        image: item.images?.[0] || item.imageUrl || null,
+        icon: AutoAwesomeIcon
+      }))
+    : serviceFallbacks.map(([Icon, title, description]) => ({ title, description, image: null, icon: Icon }));
 
   return (
     <Box sx={{ overflowX: "hidden", bgcolor: "background.default", color: "text.primary" }}>
@@ -71,8 +109,10 @@ export default function Home() {
               transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
               style={{ position: "absolute", inset: 0 }}
             >
-              {featuredHero?.imageUrl ? (
-                <Box component="img" src={featuredHero.imageUrl} alt={featuredHero.headline} sx={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
+              {currentMediaItem?.type === "video" ? (
+                <Box component="video" src={currentMediaItem.url} autoPlay muted loop playsInline sx={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
+              ) : currentMediaItem?.url ? (
+                <Box component="img" src={currentMediaItem.url} alt={featuredHero?.headline || "Hero media"} sx={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
               ) : (
                 <Box sx={{ width: "100%", height: "100%", background: "linear-gradient(120deg, #0f172a 0%, #1d4ed8 50%, #0f766e 100%)" }} />
               )}
@@ -105,6 +145,13 @@ export default function Home() {
                     <Chip label="STRATEGY // OPERATIONS // TECHNOLOGY" color="secondary" sx={{ color: "#FFF", bgcolor: "rgba(20, 184, 166, 0.22)", borderColor: "rgba(255,255,255,0.16)" }} variant="outlined" />
                     <Chip label="MOTION-LED DIGITAL EXPERIENCE" color="primary" sx={{ color: "#FFF", bgcolor: "rgba(37, 99, 235, 0.26)", borderColor: "rgba(255,255,255,0.16)" }} variant="outlined" />
                   </Stack>
+                  {heroMediaItems.length > 1 && (
+                    <Box sx={{ display: "flex", gap: 1 }}>
+                      {heroMediaItems.map((item, index) => (
+                        <Box key={`${item.url}-${index}`} sx={{ width: 10, height: 10, borderRadius: "50%", bgcolor: index === activeMediaIndex ? "#fff" : "rgba(255,255,255,0.4)" }} />
+                      ))}
+                    </Box>
+                  )}
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
                     <Button component={Link} to="/contact" variant="contained" size="large">
                       Discover capabilities
@@ -128,34 +175,48 @@ export default function Home() {
           Integrated services for modern growth
         </Typography>
         <Grid container spacing={3}>
-          {shownServices.map(([Icon, title, description]) => (
-            <Grid item xs={12} sm={6} lg={4} key={title}>
-              <Paper
-                sx={{
-                  p: 3,
-                  height: "100%",
-                  position: "relative",
-                  transition: "all 0.2s ease",
-                  "&:hover": { transform: "translateY(-3px)", borderColor: "primary.main" }
-                }}
-              >
-                <Box sx={{ position: "absolute", top: 12, left: 12, fontFamily: '"JetBrains Mono", monospace', color: "primary.main" }}>[+]</Box>
-                <Box sx={{ position: "absolute", bottom: 12, right: 12, fontFamily: '"JetBrains Mono", monospace', color: "secondary.main" }}>[-]</Box>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
-                  <Box sx={{ width: 44, height: 44, display: "grid", placeItems: "center", border: "1px solid rgba(0, 136, 255, 0.2)", color: "primary.main" }}>
-                    {createElement(Icon)}
+          {shownServices.map((service) => {
+            const Icon = service.icon || AutoAwesomeIcon;
+
+            return (
+              <Grid item xs={12} sm={6} lg={4} key={service.title}>
+                <Paper
+                  sx={{
+                    p: 0,
+                    height: "100%",
+                    position: "relative",
+                    overflow: "hidden",
+                    transition: "all 0.2s ease",
+                    "&:hover": { transform: "translateY(-3px)", borderColor: "primary.main" }
+                  }}
+                >
+                  {service.image ? (
+                    <Box component="img" src={service.image} alt={service.title} sx={{ width: "100%", height: 180, objectFit: "cover" }} />
+                  ) : (
+                    <Box sx={{ height: 180, display: "flex", alignItems: "center", justifyContent: "center", bgcolor: "rgba(37, 99, 235, 0.08)" }}>
+                      <Box sx={{ width: 56, height: 56, display: "grid", placeItems: "center", border: "1px solid rgba(37,99,235,0.2)", color: "primary.main", borderRadius: 2 }}>
+                        {createElement(Icon)}
+                      </Box>
+                    </Box>
+                  )}
+                  <Box sx={{ p: 3 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
+                      <Box sx={{ width: 44, height: 44, display: "grid", placeItems: "center", border: "1px solid rgba(37, 99, 235, 0.2)", color: "primary.main", borderRadius: 2 }}>
+                        {createElement(Icon)}
+                      </Box>
+                      <Typography variant="h6">{service.title}</Typography>
+                    </Box>
+                    <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                      {service.description}
+                    </Typography>
+                    <Typography variant="caption" color="secondary.main" sx={{ display: "block", mt: 2 }}>
+                      FLEXIBLE / SCALABLE / PREMIUM
+                    </Typography>
                   </Box>
-                  <Typography variant="h6">{title}</Typography>
-                </Box>
-                <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
-                  {description}
-                </Typography>
-                <Typography variant="caption" color="secondary.main" sx={{ display: "block", mt: 2 }}>
-                  FLEXIBLE / SCALABLE / PREMIUM
-                </Typography>
-              </Paper>
-            </Grid>
-          ))}
+                </Paper>
+              </Grid>
+            );
+          })}
         </Grid>
       </Container>
 

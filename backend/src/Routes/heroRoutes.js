@@ -7,10 +7,10 @@ const controller = require("../controllers/heroController");
 router.get("/", controller.getHeroes);
 
 // Create hero slide
-router.post("/", auth, upload.single("image"), controller.createHero);
+router.post("/", auth, upload.array("media", 8), controller.createHero);
 
 // Update hero slide
-router.put("/", auth, upload.single("image"), controller.updateHero);
+router.put("/", auth, upload.array("media", 8), controller.updateHero);
 
 // Delete hero slide
 router.delete("/:id", auth, controller.deleteHero);

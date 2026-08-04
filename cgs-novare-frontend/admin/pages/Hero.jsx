@@ -14,8 +14,8 @@ import API from "../services/adminApi";
 export default function HeroAdmin() {
   const [heroes, setHeroes] = useState([]);
   const [slides, setSlides] = useState([
-    { headline: "", subheadline: "", image: null }
-  ]); // Each slide has its own headline/subheadline/image
+    { headline: "", subheadline: "", mediaFiles: [] }
+  ]);
 
   const fetchHeroes = async () => {
     const { data } = await API.get("/hero");
@@ -26,26 +26,22 @@ export default function HeroAdmin() {
     fetchHeroes();
   }, []);
 
-  // Handle change in headline/subheadline for a specific slide
   const handleSlideChange = (index, field, value) => {
     const newSlides = [...slides];
     newSlides[index][field] = value;
     setSlides(newSlides);
   };
 
-  // Handle file input for a specific slide
-  const handleFileChange = (index, file) => {
+  const handleFileChange = (index, files) => {
     const newSlides = [...slides];
-    newSlides[index].image = file;
+    newSlides[index].mediaFiles = Array.from(files || []);
     setSlides(newSlides);
   };
 
-  // Add new empty slide
   const addSlide = () => {
-    setSlides([...slides, { headline: "", subheadline: "", image: null }]);
+    setSlides([...slides, { headline: "", subheadline: "", mediaFiles: [] }]);
   };
 
-  // Remove slide before uploading
   const removeSlide = (index) => {
     const newSlides = [...slides];
     newSlides.splice(index, 1);
@@ -55,21 +51,20 @@ export default function HeroAdmin() {
   const submit = async () => {
     try {
       for (const slide of slides) {
-        if (!slide.image) {
-          alert("All slides must have an image!");
+        if (!slide.mediaFiles.length) {
+          alert("Each slide must include at least one image or video.");
           return;
         }
 
         const formData = new FormData();
         formData.append("headline", slide.headline);
         formData.append("subheadline", slide.subheadline);
-        formData.append("image", slide.image);
+        slide.mediaFiles.forEach((file) => formData.append("media", file));
 
         await API.post("/hero", formData);
       }
 
-      // Reset form
-      setSlides([{ headline: "", subheadline: "", image: null }]);
+      setSlides([{ headline: "", subheadline: "", mediaFiles: [] }]);
       fetchHeroes();
     } catch (err) {
       console.error("Failed to upload hero slides:", err);
@@ -87,62 +82,65 @@ export default function HeroAdmin() {
 
   return (
     <Box>
-        <Typography variant="h4" mb={3}>Hero Slides</Typography>
+      <Typography variant="h4" mb={3}>Hero Slides</Typography>
 
-        <Card sx={{ p: 3, maxWidth: 800 }}>
-          <Stack spacing={3}>
-            {slides.map((slide, index) => (
-              <Card key={index} sx={{ p: 2 }}>
-                <Stack spacing={2}>
-                  <TextField
-                    label="Headline"
-                    value={slide.headline}
-                    onChange={(e) => handleSlideChange(index, "headline", e.target.value)}
+      <Card sx={{ p: 3, maxWidth: 800 }}>
+        <Stack spacing={3}>
+          {slides.map((slide, index) => (
+            <Card key={index} sx={{ p: 2 }}>
+              <Stack spacing={2}>
+                <TextField
+                  label="Headline"
+                  value={slide.headline}
+                  onChange={(e) => handleSlideChange(index, "headline", e.target.value)}
+                />
+                <TextField
+                  label="Subheadline"
+                  value={slide.subheadline}
+                  onChange={(e) => handleSlideChange(index, "subheadline", e.target.value)}
+                  multiline
+                />
+                <Button component="label" variant="outlined">
+                  Upload Images or Motion Clips
+                  <input
+                    hidden
+                    type="file"
+                    multiple
+                    accept="image/*,video/*"
+                    onChange={(e) => handleFileChange(index, e.target.files)}
                   />
-                  <TextField
-                    label="Subheadline"
-                    value={slide.subheadline}
-                    onChange={(e) => handleSlideChange(index, "subheadline", e.target.value)}
-                    multiline
-                  />
-                  <Button component="label" variant="outlined">
-                    Upload Image
-                    <input
-                      hidden
-                      type="file"
-                      onChange={(e) => handleFileChange(index, e.target.files[0])}
-                    />
+                </Button>
+                {slide.mediaFiles.length > 0 && (
+                  <Typography variant="body2" color="text.secondary">
+                    Selected: {slide.mediaFiles.map((file) => file.name).join(", ")}
+                  </Typography>
+                )}
+                {slides.length > 1 && (
+                  <Button color="error" variant="outlined" onClick={() => removeSlide(index)}>
+                    Remove Slide
                   </Button>
-                  {slide.image && <Typography>Selected: {slide.image.name}</Typography>}
-                  {slides.length > 1 && (
-                    <Button color="error" variant="outlined" onClick={() => removeSlide(index)}>
-                      Remove Slide
-                    </Button>
-                  )}
-                </Stack>
-              </Card>
-            ))}
-
-            <Stack direction="row" spacing={2}>
-              <Button variant="contained" onClick={addSlide}>Add Another Slide</Button>
-              <Button variant="contained" color="success" onClick={submit}>Upload All Slides</Button>
-            </Stack>
-          </Stack>
-        </Card>
-
-        <Stack mt={4} spacing={2}>
-          {heroes.map((h) => (
-            <Card
-              key={h._id}
-              sx={{ p: 2, display: "flex", justifyContent: "space-between" }}
-            >
-              <Typography>{h.headline}</Typography>
-              <IconButton color="error" onClick={() => remove(h._id)}>
-                <DeleteIcon />
-              </IconButton>
+                )}
+              </Stack>
             </Card>
           ))}
+
+          <Stack direction="row" spacing={2}>
+            <Button variant="contained" onClick={addSlide}>Add Another Slide</Button>
+            <Button variant="contained" color="success" onClick={submit}>Upload All Slides</Button>
+          </Stack>
         </Stack>
+      </Card>
+
+      <Stack mt={4} spacing={2}>
+        {heroes.map((h) => (
+          <Card key={h._id} sx={{ p: 2, display: "flex", justifyContent: "space-between" }}>
+            <Typography>{h.headline}</Typography>
+            <IconButton color="error" onClick={() => remove(h._id)}>
+              <DeleteIcon />
+            </IconButton>
+          </Card>
+        ))}
+      </Stack>
     </Box>
   );
 }

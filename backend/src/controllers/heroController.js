@@ -2,23 +2,42 @@
 const Hero = require("../models/Hero");
 const cloudinary = require("../config/cloudinary");
 
+const uploadMedia = async (files = []) => {
+  const uploads = await Promise.all(
+    files.map(async (file) => {
+      const result = await cloudinary.uploader.upload(file.path, {
+        resource_type: file.mimetype?.startsWith("video") ? "video" : "image"
+      });
+
+      return {
+        url: result.secure_url,
+        type: file.mimetype?.startsWith("video") ? "video" : "image"
+      };
+    })
+  );
+
+  return uploads;
+};
+
 // =====================
 // CREATE HERO SLIDE
 // =====================
 exports.createHero = async (req, res) => {
   try {
     const { headline, subheadline } = req.body;
+    const files = req.files?.length ? req.files : req.file ? [req.file] : [];
 
-    if (!req.file) {
-      return res.status(400).json({ message: "Image is required" });
+    if (!files.length) {
+      return res.status(400).json({ message: "At least one media file is required" });
     }
 
-    const result = await cloudinary.uploader.upload(req.file.path);
+    const media = await uploadMedia(files);
 
     const hero = await Hero.create({
       headline,
       subheadline,
-      imageUrl: result.secure_url
+      media,
+      imageUrl: media[0]?.url || ""
     });
 
     res.status(201).json(hero);
@@ -59,15 +78,19 @@ exports.updateHero = async (req, res) => {
   try {
     const { headline, subheadline } = req.body;
     const updateData = { headline, subheadline };
-    if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path);
-      updateData.imageUrl = result.secure_url;
+    const files = req.files?.length ? req.files : req.file ? [req.file] : [];
+
+    if (files.length) {
+      const media = await uploadMedia(files);
+      updateData.media = media;
+      updateData.imageUrl = media[0]?.url || "";
     }
+
     const hero = await Hero.findByIdAndUpdate(req.body.id, updateData, {
       new: true
     });
     res.json(hero);
   } catch (err) {
     res.status(500).json({ message: "Failed to update hero" });
-  } 
+  }
 };

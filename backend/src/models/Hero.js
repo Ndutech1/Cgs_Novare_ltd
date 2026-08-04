@@ -1,6 +1,14 @@
 //backend/src/models/Hero.js
 const mongoose = require("mongoose");
 
+const mediaItemSchema = new mongoose.Schema(
+  {
+    url: { type: String, required: true },
+    type: { type: String, enum: ["image", "video"], default: "image" }
+  },
+  { _id: false }
+);
+
 const heroSchema = new mongoose.Schema(
   {
     headline: {
@@ -11,9 +19,18 @@ const heroSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    media: [mediaItemSchema],
     imageUrl: {
       type: String,
-      required: true
+      default: ""
+    },
+    autoplay: {
+      type: Boolean,
+      default: true
+    },
+    interval: {
+      type: Number,
+      default: 3000
     }
   },
   { timestamps: true }
