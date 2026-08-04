@@ -1,78 +1,93 @@
-//cgs-novare-frontend/src/pages/service.js
 import { useEffect, useState } from "react";
-import {
-  Box,
-  Grid,
-  Typography,
-  CircularProgress,
-  Container,
-  Paper
-} from "@mui/material";
-import ServiceCard from "../components/ServiceCard";
+import { Box, Grid, Typography, CircularProgress, Container, Paper, Stack } from "@mui/material";
 import { fetchServices } from "../service/api";
 import { motion } from "framer-motion";
-
-const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } };
-const DEFAULT_IMAGE = "/default/3.jpg";
+import ArchitectureOutlinedIcon from "@mui/icons-material/ArchitectureOutlined";
+import ConstructionOutlinedIcon from "@mui/icons-material/ConstructionOutlined";
+import EngineeringOutlinedIcon from "@mui/icons-material/EngineeringOutlined";
+import HubOutlinedIcon from "@mui/icons-material/HubOutlined";
+import BusinessOutlinedIcon from "@mui/icons-material/BusinessOutlined";
 
 export default function Services() {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchServices().then(setServices).catch(console.error).finally(() => setLoading(false));
+    fetchServices().then(setServices).catch(() => setServices([])).finally(() => setLoading(false));
   }, []);
 
-  if (loading) return (
-    <Box sx={{ display: "flex", justifyContent: "center", mt: 8 }}>
-      <CircularProgress />
-    </Box>
-  );
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", py: 10 }}>
+        <CircularProgress color="primary" />
+      </Box>
+    );
+  }
+
+  const fallbackServices = [
+    { title: "Structural Delivery", description: "Site-ready coordination for concrete, steel and fit-out packages.", icon: <ConstructionOutlinedIcon /> },
+    { title: "Architectural Systems", description: "Model-based design thinking shaped around constructability and performance.", icon: <ArchitectureOutlinedIcon /> },
+    { title: "Engineering Intelligence", description: "Technical analysis for resilient and efficient execution.", icon: <EngineeringOutlinedIcon /> },
+    { title: "Digital Twin Readiness", description: "Connected asset data and BIM workflows tuned for long-life operations.", icon: <HubOutlinedIcon /> },
+    { title: "Project Governance", description: "Clear scope control, reporting and decision support for complex builds.", icon: <BusinessOutlinedIcon /> }
+  ];
+
+  const visibleServices = services.length ? services : fallbackServices;
 
   return (
-    <Box>
-
-      {/* HEADER */}
-      <Box sx={{ py: { xs: 6, md: 10 }, textAlign: "center", background: "linear-gradient(135deg,#1976d2,#00c853)", color: "#fff", clipPath: "ellipse(100% 100% at 50% 0%)" }}>
-        <motion.div initial="hidden" animate="visible" variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 1 } } }}>
-          <Typography variant="h3" fontWeight={800}>Our Services</Typography>
-          <Typography variant="h6" sx={{ mt: 3, maxWidth: 900, mx: "auto" }}>
-            Our service portfolio covers key areas to provide tailored, result-oriented solutions for businesses and organizations.
+    <Box sx={{ bgcolor: "background.default", color: "text.primary" }}>
+      <Box sx={{ borderBottom: "1px solid", borderColor: "divider", bgcolor: "rgba(255, 255, 255, 0.82)", backdropFilter: "blur(16px)" }}>
+        <Container sx={{ py: { xs: 7, md: 10 } }}>
+          <Typography variant="caption" color="primary.main" sx={{ display: "block", mb: 2 }}>
+            // 003_CORE_CAPABILITIES
           </Typography>
-        </motion.div>
+          <Typography variant="h2" sx={{ fontSize: { xs: "2rem", md: "2.8rem" }, maxWidth: 760 }}>
+            Technical delivery services built for precision and speed.
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ mt: 2, maxWidth: 760, lineHeight: 1.8 }}>
+            Our portfolio spans construction oversight, BIM coordination, engineering analysis and business systems for clients who require measurable outcomes.
+          </Typography>
+        </Container>
       </Box>
 
-      {/* SERVICES GRID */}
-      <Container sx={{ py: 8 }}>
-        {!services.length ? (
-          <Typography textAlign="center" color="text.secondary">
-            Services will be updated soon.
-          </Typography>
-        ) : (
-          <Grid container spacing={4}>
-            {services.map((service, i) => (
-              <Grid item xs={12} md={4} key={service._id}>
-                <motion.div
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: i * 0.2 }}
-                  viewport={{ once: true }}
-                >
-                  <ServiceCard service={service}/>
-                </motion.div>
-              </Grid>
-            ))}
-          </Grid>
-        )}
+      <Container sx={{ py: { xs: 7, md: 10 } }}>
+        <Grid container spacing={3}>
+          {visibleServices.map((service, index) => (
+            <Grid item xs={12} md={4} key={service._id || service.title}>
+              <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: index * 0.08 }} viewport={{ once: true }}>
+                <Paper sx={{ p: 3, height: "100%", position: "relative" }}>
+                  <Box sx={{ position: "absolute", top: 12, left: 12, fontFamily: '"JetBrains Mono", monospace', color: "primary.main" }}>[+]</Box>
+                  <Box sx={{ position: "absolute", bottom: 12, right: 12, fontFamily: '"JetBrains Mono", monospace', color: "secondary.main" }}>[-]</Box>
+                  <Box sx={{ width: 48, height: 48, display: "grid", placeItems: "center", border: "1px solid", borderColor: "divider", color: "primary.main", mb: 2 }}>
+                    {service.icon || <EngineeringOutlinedIcon />}
+                  </Box>
+                  <Typography variant="h6" sx={{ mb: 1 }}>{service.title}</Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                    {service.description || "Engineering and delivery expertise tailored to your project goals."}
+                  </Typography>
+                  <Typography variant="caption" color="secondary.main" sx={{ display: "block", mt: 2 }}>
+                    SPEC / BIM LOD 400
+                  </Typography>
+                </Paper>
+              </motion.div>
+            </Grid>
+          ))}
+        </Grid>
       </Container>
 
-      {/* BUNDLED SERVICES */}
-      <Box sx={{ py: 6, background: "linear-gradient(120deg,#0a2540 0%,#0a1f33 100%)", color: "#fff", textAlign: "center" }}>
+      <Box sx={{ borderTop: "1px solid", borderColor: "divider", py: { xs: 6, md: 8 } }}>
         <Container>
-          <Typography variant="h5" fontWeight={700}>Integrated & Bundled Solutions</Typography>
-          <Typography sx={{ mt: 2, maxWidth: 900, mx: "auto", opacity: 0.9 }}>
-            We offer bundled services for clients requiring cross-sector solutions — IT-integrated logistics, smart infrastructure, or workforce training for engineering teams.
-          </Typography>
+          <Paper sx={{ p: { xs: 3, md: 4 } }}>
+            <Typography variant="caption" color="secondary.main" sx={{ display: "block", mb: 2 }}>
+              // INTEGRATED_DELIVERY
+            </Typography>
+            <Typography variant="h5" sx={{ mb: 1 }}>
+              Bundled solutions for complex portfolios
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.8, maxWidth: 760 }}>
+              We can combine design oversight, engineering coordination, technology deployment and business support into one structured engagement for clients managing multi-phase work.
+            </Typography>
+          </Paper>
         </Container>
       </Box>
     </Box>

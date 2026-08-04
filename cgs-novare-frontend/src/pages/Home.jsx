@@ -1,102 +1,188 @@
 import { createElement, useEffect, useState } from "react";
-import { Box, Button, Card, CardContent, Container, Grid, Stack, Typography } from "@mui/material";
-import ArchitectureIcon from "@mui/icons-material/Architecture";
-import ApartmentIcon from "@mui/icons-material/Apartment";
-import EngineeringIcon from "@mui/icons-material/Engineering";
-import HubIcon from "@mui/icons-material/Hub";
-import DevicesOtherIcon from "@mui/icons-material/DevicesOther";
-import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
-import ConstructionIcon from "@mui/icons-material/Construction";
-import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
-import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
-import LightbulbIcon from "@mui/icons-material/Lightbulb";
+import { Box, Button, Chip, Container, Grid, Paper, Stack, Typography } from "@mui/material";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import InsightsIcon from "@mui/icons-material/Insights";
 import GroupsIcon from "@mui/icons-material/Groups";
-import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
+import DashboardCustomizeIcon from "@mui/icons-material/DashboardCustomize";
+import HandshakeIcon from "@mui/icons-material/Handshake";
+import SpeedIcon from "@mui/icons-material/Speed";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import Hero from "../components/Hero";
 import ProjectCard from "../components/ProjectCard";
 import { fetchHeroes, fetchProjects, fetchServices } from "../service/api";
 
 const serviceFallbacks = [
-  [ConstructionIcon, "Construction", "Reliable project delivery from site preparation to finishing."],
-  [ArchitectureIcon, "Building Design & Architecture", "Functional, compliant designs shaped around your vision."],
-  [ApartmentIcon, "Town Planning", "Practical planning support for sustainable developments."],
-  [HubIcon, "Smart Home Automation", "Connected spaces that improve comfort, security and control."],
-  [EngineeringIcon, "Engineering Services", "Technical expertise for robust, efficient infrastructure."],
-  [BusinessCenterIcon, "Business Consulting", "Clear strategies that help organisations grow with confidence."],
-  [DevicesOtherIcon, "IT Support & Laptop Sales", "Dependable technology support and the equipment to keep teams moving."],
-];
-const reasons = [[VerifiedUserIcon, "Registered professionals", "Qualified multidisciplinary expertise on every engagement."], [HealthAndSafetyIcon, "Quality & safety", "High standards, careful execution and accountable delivery."], [LightbulbIcon, "Innovation-led", "Practical technology and smarter methods where they create value."], [GroupsIcon, "Client-focused", "Clear communication and solutions tailored to your goals."]];
-
-const testimonials = [
-  {
-    name: "Aisha Musa",
-    role: "Property Developer, Lagos",
-    quote: "CGS Novare delivered our mixed-use development on time and with exceptional attention to quality. Their communication made a difficult project feel easy."
-  },
-  {
-    name: "Kofi Mensah",
-    role: "Operations Director, Accra",
-    quote: "The smart home installation and construction coordination were seamless. The team understood our needs and executed with precision."
-  },
-  {
-    name: "Fatou Cissé",
-    role: "Business Owner, Dakar",
-    quote: "We trust CGS Novare for both design and construction advice. Their dependable service is exactly what builds confidence in the local market."
-  }
+  [AutoAwesomeIcon, "Strategy & Growth", "Forward-looking business planning that aligns product, people and performance."],
+  [InsightsIcon, "Analytics & Insight", "Clear reporting and data-driven decision support for modern teams."],
+  [GroupsIcon, "People & Operations", "Structured delivery systems that strengthen culture, execution and collaboration."],
+  [DashboardCustomizeIcon, "Digital Enablement", "Modern platforms and workflows that make operations feel effortless."],
+  [HandshakeIcon, "Partnership Advisory", "Trusted guidance for partnerships, governance and scalable growth."],
+  [SpeedIcon, "Execution Excellence", "Focused delivery with precision, speed and calm under pressure."]
 ];
 
 export default function Home() {
   const [services, setServices] = useState([]);
   const [projects, setProjects] = useState([]);
-  const [heroSlides, setHeroSlides] = useState([]);
+  const [heroes, setHeroes] = useState([]);
+
   useEffect(() => {
     fetchServices().then(setServices).catch(() => setServices([]));
     fetchProjects().then(setProjects).catch(() => setProjects([]));
-    fetchHeroes().then(setHeroSlides).catch(() => setHeroSlides([]));
+    fetchHeroes().then(setHeroes).catch(() => setHeroes([]));
   }, []);
-  const shownServices = services.length ? services.slice(0, 8).map(item => [ConstructionIcon, item.title, item.description]) : serviceFallbacks;
 
-  return <Box sx={{ overflowX: "hidden" }}>
-    <Hero heroSlides={heroSlides} />
-    <Container sx={{ py: { xs: 8, md: 12 } }}>
-      <Grid container spacing={{ xs: 3, md: 8 }} alignItems="center">
-        <Grid item xs={12} md={5}><Typography color="primary" fontWeight={800} textTransform="uppercase" letterSpacing={1.5}>Who we are</Typography><Typography variant="h3" sx={{ mt: 1.5 }}>Built for ambitious projects and growing businesses.</Typography></Grid>
-        <Grid item xs={12} md={7}><Typography color="text.secondary" fontSize="1.12rem" lineHeight={1.8}>CGS Novare is a multidisciplinary company delivering construction, design, engineering, technology and business solutions. Our registered professionals combine local understanding with rigorous standards to create dependable outcomes for clients and communities.</Typography></Grid>
-      </Grid>
-    </Container>
-    <Box sx={{ bgcolor: "#edf4fa", py: { xs: 8, md: 11 } }}><Container>
-      <Typography color="primary" fontWeight={800} textAlign="center" textTransform="uppercase" letterSpacing={1.5}>What we do</Typography><Typography variant="h3" textAlign="center" sx={{ mt: 1 }}>Our core services</Typography><Typography color="text.secondary" textAlign="center" sx={{ mt: 2, mb: 5 }}>One experienced partner across the disciplines that move your project forward.</Typography>
-      <Grid container spacing={2.5}>{shownServices.map(([Icon, title, description]) => <Grid item xs={12} sm={6} md={4} lg={3} key={title}><Card sx={{ height: "100%", transition: "transform .2s", "&:hover": { transform: "translateY(-5px)" } }}><CardContent sx={{ p: 3 }}><Box sx={{ display: "grid", placeItems: "center", width: 48, height: 48, borderRadius: 2.5, bgcolor: "#e0efff", color: "primary.main", mb: 2 }}>{createElement(Icon)}</Box><Typography fontWeight={800} variant="h6">{title}</Typography><Typography variant="body2" color="text.secondary" sx={{ mt: 1, lineHeight: 1.65 }}>{description}</Typography><Button component={Link} to="/services" size="small" endIcon={<ArrowForwardIcon />} sx={{ mt: 2, px: 0 }}>Learn more</Button></CardContent></Card></Grid>)}</Grid>
-      <Box textAlign="center" mt={4}><Button component={Link} to="/services" variant="outlined">Explore all services</Button></Box>
-    </Container></Box>
-    <Container sx={{ py: { xs: 8, md: 11 } }}><Stack direction={{ xs: "column", md: "row" }} justifyContent="space-between" alignItems={{ md: "end" }} spacing={2} mb={5}><Box><Typography color="primary" fontWeight={800} textTransform="uppercase" letterSpacing={1.5}>Our work</Typography><Typography variant="h3" sx={{ mt: 1 }}>Featured projects</Typography></Box><Button component={Link} to="/projects" endIcon={<ArrowForwardIcon />}>View all projects</Button></Stack>
-      {projects.length ? <Grid container spacing={3}>{projects.slice(0, 4).map(project => <Grid item xs={12} sm={6} md={3} key={project._id}><ProjectCard project={project} /></Grid>)}</Grid> : <Card sx={{ p: 5, textAlign: "center", bgcolor: "#f6f9fc" }}><Typography color="text.secondary">Selected project stories will appear here soon.</Typography></Card>}
-    </Container>
-    <Box sx={{ bgcolor: "#f5f9fc", py: { xs: 8, md: 11 } }}>
-      <Container>
-        <Typography color="primary" fontWeight={800} textAlign="center" textTransform="uppercase" letterSpacing={1.5}>Testimonials</Typography>
-        <Typography variant="h3" textAlign="center" sx={{ mt: 1, mb: 5 }}>Trusted by clients across Africa</Typography>
-        <Grid container spacing={3}>
-          {testimonials.map((item, index) => (
-            <Grid item xs={12} md={4} key={index}>
-              <Card sx={{ p: 3, height: "100%", border: "1px solid rgba(16,42,67,0.1)" }}>
-                <CardContent>
-                  <FormatQuoteIcon sx={{ color: "primary.main", fontSize: 36, mb: 1 }} />
-                  <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.8 }}>
-                    {item.quote}
+  const featuredHero = heroes[0] || null;
+  const shownServices = services.length
+    ? services.slice(0, 6).map((item) => [AutoAwesomeIcon, item.title, item.description])
+    : serviceFallbacks;
+
+  return (
+    <Box sx={{ overflowX: "hidden", bgcolor: "background.default", color: "text.primary" }}>
+      <Box sx={{ borderBottom: "1px solid", borderColor: "divider", bgcolor: "rgba(255,255,255,0.82)", backdropFilter: "blur(16px)" }}>
+        <Container sx={{ py: 1.5 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 1.5,
+              border: "1px solid",
+              borderColor: "divider",
+              px: { xs: 2, md: 3 },
+              py: 1.5,
+              borderRadius: 3,
+              bgcolor: "rgba(255,255,255,0.74)"
+            }}
+          >
+            <Typography variant="caption" color="primary.main">STATUS: ONLINE // MULTIDISCIPLINARY DELIVERY</Typography>
+            <Typography variant="caption" color="text.secondary">GLOBAL PARTNERSHIPS // STRATEGIC OPERATIONS</Typography>
+            <Typography variant="caption" color="secondary.main">FOCUSED // FLEXIBLE // FUTURE READY</Typography>
+          </Box>
+        </Container>
+      </Box>
+
+      <Container sx={{ py: { xs: 8, md: 12 } }}>
+        <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.65 }}>
+          <Paper sx={{ position: "relative", overflow: "hidden", minHeight: { xs: 520, md: 660 }, borderRadius: { xs: 4, md: 5 }, bgcolor: "#0f172a" }}>
+            <motion.div
+              animate={{ y: [0, -8, 0], scale: [1, 1.02, 1] }}
+              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+              style={{ position: "absolute", inset: 0 }}
+            >
+              {featuredHero?.imageUrl ? (
+                <Box component="img" src={featuredHero.imageUrl} alt={featuredHero.headline} sx={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
+              ) : (
+                <Box sx={{ width: "100%", height: "100%", background: "linear-gradient(120deg, #0f172a 0%, #1d4ed8 50%, #0f766e 100%)" }} />
+              )}
+            </motion.div>
+
+            <Box sx={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(2, 6, 23, 0.92) 0%, rgba(2, 6, 23, 0.68) 42%, rgba(2, 6, 23, 0.2) 100%)" }} />
+            <Box sx={{ position: "absolute", inset: 0, background: "radial-gradient(circle at top right, rgba(20, 184, 166, 0.24), transparent 28%)" }} />
+
+            <Box sx={{ position: "relative", zIndex: 1, height: "100%", display: "flex", alignItems: "flex-end", p: { xs: 3, md: 5 } }}>
+              <motion.div initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }} style={{ width: "100%" }}>
+                <Stack spacing={3} sx={{ maxWidth: { xs: "100%", md: 640 } }}>
+                  <Typography variant="caption" color="secondary.main" sx={{ display: "block" }}>
+                    // MULTIDISCIPLINARY COMPANY
                   </Typography>
-                  <Typography fontWeight={800}>{item.name}</Typography>
-                  <Typography variant="body2" color="text.secondary">{item.role}</Typography>
-                </CardContent>
-              </Card>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      fontSize: { xs: "2.3rem", md: "4.2rem" },
+                      lineHeight: 1.02,
+                      color: "#F8FAFC",
+                      textShadow: "0 10px 30px rgba(2, 6, 23, 0.4)"
+                    }}
+                  >
+                    {featuredHero?.headline || "Modern solutions crafted for growth, operations and impact."}
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: "rgba(248, 250, 252, 0.85)", maxWidth: 620, fontSize: "1.05rem", lineHeight: 1.8 }}>
+                    {featuredHero?.subheadline || "We combine strategy, technology, consulting and execution into one seamless experience for ambitious businesses and teams."}
+                  </Typography>
+                  <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} sx={{ flexWrap: "wrap" }}>
+                    <Chip label="STRATEGY // OPERATIONS // TECHNOLOGY" color="secondary" sx={{ color: "#FFF", bgcolor: "rgba(20, 184, 166, 0.22)", borderColor: "rgba(255,255,255,0.16)" }} variant="outlined" />
+                    <Chip label="MOTION-LED DIGITAL EXPERIENCE" color="primary" sx={{ color: "#FFF", bgcolor: "rgba(37, 99, 235, 0.26)", borderColor: "rgba(255,255,255,0.16)" }} variant="outlined" />
+                  </Stack>
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+                    <Button component={Link} to="/contact" variant="contained" size="large">
+                      Discover capabilities
+                    </Button>
+                    <Button component={Link} to="/projects" variant="outlined" size="large" sx={{ color: "#FFF", borderColor: "rgba(255,255,255,0.35)", bgcolor: "rgba(255,255,255,0.08)" }}>
+                      View our work
+                    </Button>
+                  </Box>
+                </Stack>
+              </motion.div>
+            </Box>
+          </Paper>
+        </motion.div>
+      </Container>
+
+      <Container sx={{ pb: { xs: 8, md: 11 } }}>
+        <Typography variant="caption" color="primary.main" sx={{ display: "block", mb: 2 }}>
+          // CORE_CAPABILITIES
+        </Typography>
+        <Typography variant="h3" sx={{ mb: 4 }}>
+          Integrated services for modern growth
+        </Typography>
+        <Grid container spacing={3}>
+          {shownServices.map(([Icon, title, description]) => (
+            <Grid item xs={12} sm={6} lg={4} key={title}>
+              <Paper
+                sx={{
+                  p: 3,
+                  height: "100%",
+                  position: "relative",
+                  transition: "all 0.2s ease",
+                  "&:hover": { transform: "translateY(-3px)", borderColor: "primary.main" }
+                }}
+              >
+                <Box sx={{ position: "absolute", top: 12, left: 12, fontFamily: '"JetBrains Mono", monospace', color: "primary.main" }}>[+]</Box>
+                <Box sx={{ position: "absolute", bottom: 12, right: 12, fontFamily: '"JetBrains Mono", monospace', color: "secondary.main" }}>[-]</Box>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
+                  <Box sx={{ width: 44, height: 44, display: "grid", placeItems: "center", border: "1px solid rgba(0, 136, 255, 0.2)", color: "primary.main" }}>
+                    {createElement(Icon)}
+                  </Box>
+                  <Typography variant="h6">{title}</Typography>
+                </Box>
+                <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                  {description}
+                </Typography>
+                <Typography variant="caption" color="secondary.main" sx={{ display: "block", mt: 2 }}>
+                  FLEXIBLE / SCALABLE / PREMIUM
+                </Typography>
+              </Paper>
             </Grid>
           ))}
         </Grid>
       </Container>
+
+      <Container sx={{ pb: { xs: 8, md: 11 } }}>
+        <Paper sx={{ p: { xs: 3, md: 4 }, borderColor: "rgba(255, 184, 0, 0.2)" }}>
+          <Typography variant="caption" color="secondary.main" sx={{ display: "block", mb: 2 }}>
+            // ACTIVE_PROJECTS
+          </Typography>
+          <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 2, mb: 3 }}>
+            <Typography variant="h3">Selected delivery highlights</Typography>
+            <Button component={Link} to="/projects" endIcon={<ArrowForwardIcon />}>
+              View all projects
+            </Button>
+          </Box>
+          {projects.length ? (
+            <Grid container spacing={3}>
+              {projects.slice(0, 4).map((project) => (
+                <Grid item xs={12} sm={6} md={3} key={project._id}>
+                  <ProjectCard project={project} />
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <Typography color="text.secondary">Selected project stories will appear here soon.</Typography>
+          )}
+        </Paper>
+      </Container>
     </Box>
-    <Box sx={{ bgcolor: "#102a43", color: "#fff", py: { xs: 8, md: 11 } }}><Container><Typography color="#8ed1ff" fontWeight={800} textAlign="center" textTransform="uppercase" letterSpacing={1.5}>The CGS difference</Typography><Typography variant="h3" textAlign="center" sx={{ mt: 1, mb: 5 }}>Why choose CGS Novare</Typography><Grid container spacing={3}>{reasons.map(([Icon, title, text]) => <Grid item xs={12} sm={6} md={3} key={title}><Box sx={{ textAlign: "center", px: 1 }}>{createElement(Icon, { sx: { fontSize: 38, color: "#8ed1ff" } })}<Typography fontWeight={800} sx={{ mt: 1.5 }}>{title}</Typography><Typography variant="body2" sx={{ color: "#c4d4e4", mt: 1 }}>{text}</Typography></Box></Grid>)}</Grid></Container></Box>
-    <Box sx={{ py: { xs: 8, md: 10 }, bgcolor: "primary.main", color: "#fff" }}><Container><Stack direction={{ xs: "column", md: "row" }} alignItems={{ md: "center" }} justifyContent="space-between" spacing={3}><Box><Typography variant="h3">Ready to start your project?</Typography><Typography sx={{ mt: 1, opacity: .9 }}>Talk to our team about your scope, timeline and next steps.</Typography></Box><Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}><Button component={Link} to="/contact" variant="contained" color="inherit" sx={{ color: "primary.main" }}>Get a quote</Button><Button component="a" href={import.meta.env.VITE_WHATSAPP_URL || "/contact"} variant="outlined" color="inherit">WhatsApp us</Button></Stack></Stack></Container></Box>
-  </Box>;
+  );
 }

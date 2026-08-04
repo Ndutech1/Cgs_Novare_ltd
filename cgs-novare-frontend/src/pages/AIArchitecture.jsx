@@ -120,7 +120,7 @@ const TechnicalCADViewport = ({ domain, data, viewMode, seed }) => {
       sx={{
         width: '100%',
         height: 440,
-        backgroundColor: '#0b0f19', // Authentic CAD dark viewport background
+        backgroundColor: '#F8FAFC', // Light architectural viewport background
         borderRadius: 2,
         position: 'relative',
         overflow: 'hidden',

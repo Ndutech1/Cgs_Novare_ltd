@@ -15,7 +15,7 @@ export const fetchGalleryImages = async () => {
 
 export const fetchHeroes = async () => {
   const res = await API.get("/hero");
-  return res.data;
+  return Array.isArray(res.data) ? res.data : [];
 };
 
 export const fetchServices = async () => {
